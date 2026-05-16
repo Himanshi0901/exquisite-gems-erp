@@ -1,0 +1,97 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import { Toaster } from "react-hot-toast";
+
+import Dashboard from "./pages/Dashboard";
+
+import Inventory from "./pages/Inventory";
+
+import AddItem from "./pages/AddItem";
+
+import ImportData from "./pages/ImportData";
+
+function App() {
+  return (
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+
+          style: {
+            background:
+              "#ffffff",
+
+            color: "#1f2933",
+
+            border:
+              "1px solid #dfe5ea",
+
+            borderRadius:
+              "16px",
+
+            padding:
+              "16px 18px",
+
+            fontWeight:
+              "600",
+
+            boxShadow:
+              "0 4px 14px rgba(0,0,0,0.08)",
+          },
+
+          success: {
+            iconTheme: {
+              primary:
+                "#16a34a",
+
+              secondary:
+                "#ffffff",
+            },
+          },
+
+          error: {
+            iconTheme: {
+              primary:
+                "#dc2626",
+
+              secondary:
+                "#ffffff",
+            },
+          },
+        }}
+      />
+
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Dashboard />
+            }
+          />
+
+          <Route
+            path="/inventory"
+            element={
+              <Inventory />
+            }
+          />
+
+          <Route
+            path="/add-item"
+            element={
+              <AddItem />
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
+}
+
+export default App;
