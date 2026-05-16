@@ -12,10 +12,10 @@ function InventoryTableView({
 
   return (
     <>
-      <div className="overflow-x-auto rounded-[20px] border border-[#dfe5ea] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <table className="w-full min-w-[1200px] bg-white">
-          <thead>
-            <tr className="border-b border-[#e6ebef] text-left bg-[#f8fafb]">
+      <div className="overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+        <table className="w-full min-w-[2100px] bg-white">
+          <thead className="sticky top-0 z-10 bg-[#f8fafb]">
+            <tr className="border-b border-[#e6ebef] text-left">
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
                 Image
               </th>
@@ -29,7 +29,19 @@ function InventoryTableView({
               </th>
 
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                Client
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                DLC No.
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
                 Metal
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                PCS
               </th>
 
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
@@ -41,7 +53,31 @@ function InventoryTableView({
               </th>
 
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
-                Amount
+                Diamond Wt
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                Diamond Value
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                CS Wt
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                CS Value
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                Labour
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                Total Amount
+              </th>
+
+              <th className="p-5 text-sm text-[#7b8794] font-semibold">
+                Out Date
               </th>
 
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
@@ -61,7 +97,9 @@ function InventoryTableView({
                 }
                 className="border-b border-[#eef2f5] hover:bg-[#f8fafb] cursor-pointer transition-all duration-200"
               >
-                <td className="p-5">
+                {/* IMAGE */}
+
+                <td className="p-4">
                   <img
                     src={
                       item.image ||
@@ -71,61 +109,149 @@ function InventoryTableView({
                   />
                 </td>
 
-                <td className="p-5 font-semibold text-[#31475a]">
+                {/* SKU */}
+
+                <td className="p-4 font-bold text-[#31475a] whitespace-nowrap">
                   {
                     item.skuStNo
                   }
                 </td>
 
-                <td className="p-5 text-[#1f2933] font-medium">
+                {/* ITEM */}
+
+                <td className="p-4 text-[#1f2933] font-semibold whitespace-nowrap">
                   {item.item}
                 </td>
 
-                <td className="p-5 text-[#52606d]">
-                  {item.metal}
+                {/* CLIENT */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.clientName ||
+                    "-"}
                 </td>
 
-                <td className="p-5 text-[#52606d]">
+                {/* DLC */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.dlcNo ||
+                    "-"}
+                </td>
+
+                {/* METAL */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.metal ||
+                    "-"}
+                </td>
+
+                {/* PCS */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.pcs ||
+                    "-"}
+                </td>
+
+                {/* GROSS */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
                   {
                     item.grossWeight
                   }
+                  g
                 </td>
 
-                <td className="p-5 text-[#52606d]">
+                {/* NET */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
                   {
                     item.netWeight
                   }
+                  g
                 </td>
 
-                <td className="p-5 font-bold text-[#1f2933]">
+                {/* DIAMOND WT */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.diamondWeight ||
+                    0}
+                </td>
+
+                {/* DIAMOND VALUE */}
+
+                <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
+                  $
+                  {Number(
+                    item.diamondValue ||
+                      0
+                  ).toLocaleString()}
+                </td>
+
+                {/* CS WT */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.csWeight ||
+                    0}
+                </td>
+
+                {/* CS VALUE */}
+
+                <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
+                  $
+                  {Number(
+                    item.csValue ||
+                      0
+                  ).toLocaleString()}
+                </td>
+
+                {/* LABOUR */}
+
+                <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
+                  $
+                  {Number(
+                    item.labourValue ||
+                      0
+                  ).toLocaleString()}
+                </td>
+
+                {/* TOTAL */}
+
+                <td className="p-4 font-black text-[#1f2933] whitespace-nowrap">
                   $
                   {Number(
                     item.amount || 0
                   ).toLocaleString()}
                 </td>
 
-                <td className="p-5">
+                {/* OUT DATE */}
+
+                <td className="p-4 text-[#52606d] whitespace-nowrap">
+                  {item.outDate
+                    ? new Date(
+                        item.outDate
+                      ).toLocaleDateString()
+                    : "-"}
+                </td>
+
+                {/* STATUS */}
+
+                <td className="p-4">
                   <div
-                    className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold
+                    className={`inline-flex px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap
                       
                       ${
                         item.status ===
                         "SOLD"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-red-100 text-red-700"
 
-                          : item.status ===
-                            "IN_DUBAI"
-                          ? "bg-yellow-100 text-yellow-700"
-
-                          : item.status ===
-                            "RETURNED"
-                          ? "bg-blue-100 text-blue-700"
-
-                          : "bg-gray-100 text-gray-700"
+                          : "bg-green-100 text-green-700"
                       }
                     `}
                   >
-                    {item.status}
+                    {item.status ===
+                    "SOLD"
+                      ? "SOLD"
+
+                      : "AVAILABLE"}
                   </div>
                 </td>
               </tr>

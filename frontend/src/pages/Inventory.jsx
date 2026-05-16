@@ -4,6 +4,10 @@ import {
   useState,
 } from "react";
 
+import * as XLSX from "xlsx";
+
+import { saveAs } from "file-saver";
+
 import MainLayout from "../layouts/MainLayout";
 
 import InventoryTable from "../components/InventoryTable";
@@ -30,8 +34,38 @@ function Inventory() {
   const [itemFilter, setItemFilter] =
     useState("ALL");
 
+  const [clientFilter, setClientFilter] =
+    useState("ALL");
+
+  const [dlcFilter, setDlcFilter] =
+    useState("ALL");
+
   const [sortBy, setSortBy] =
     useState("latest");
+
+  const uniqueClients =
+    [
+      ...new Set(
+        items
+          .map(
+            (item) =>
+              item.clientName
+          )
+          .filter(Boolean)
+      ),
+    ];
+
+  const uniqueDlc =
+    [
+      ...new Set(
+        items
+          .map(
+            (item) =>
+              item.dlcNo
+          )
+          .filter(Boolean)
+      ),
+    ];
 
   const filteredItems =
     useMemo(() => {
@@ -44,6 +78,8 @@ function Inventory() {
                 item.item,
                 item.metal,
                 item.status,
+                item.clientName,
+                item.dlcNo,
               ]
                 .join(" ")
                 .toLowerCase()
@@ -62,14 +98,27 @@ function Inventory() {
                 "ALL" ||
               item.item
                 ?.toUpperCase()
-                .includes(
-                  itemFilter
-                );
+                .trim() ===
+                itemFilter;
+
+            const matchesClient =
+              clientFilter ===
+                "ALL" ||
+              item.clientName ===
+                clientFilter;
+
+            const matchesDlc =
+              dlcFilter ===
+                "ALL" ||
+              item.dlcNo ===
+                dlcFilter;
 
             return (
               matchesSearch &&
               matchesStatus &&
-              matchesItem
+              matchesItem &&
+              matchesClient &&
+              matchesDlc
             );
           }
         );
@@ -125,20 +174,115 @@ function Inventory() {
       search,
       statusFilter,
       itemFilter,
+      clientFilter,
+      dlcFilter,
       sortBy,
     ]);
+
+  const exportToExcel =
+    () => {
+      const exportData =
+        filteredItems.map(
+          (item) => ({
+            SKU:
+              item.skuStNo,
+
+            Item:
+              item.item,
+
+            Client:
+              item.clientName,
+
+            "DLC No":
+              item.dlcNo,
+
+            Metal:
+              item.metal,
+
+            PCS:
+              item.pcs,
+
+            "Gross Weight":
+              item.grossWeight,
+
+            "Net Weight":
+              item.netWeight,
+
+            "Diamond Weight":
+              item.diamondWeight,
+
+            "Diamond Value":
+              item.diamondValue,
+
+            "CS Weight":
+              item.csWeight,
+
+            "CS Value":
+              item.csValue,
+
+            Labour:
+              item.labourValue,
+
+            Amount:
+              item.amount,
+
+            Status:
+              item.status,
+
+            Description:
+              item.description,
+          })
+        );
+
+      const worksheet =
+        XLSX.utils.json_to_sheet(
+          exportData
+        );
+
+      const workbook =
+        XLSX.utils.book_new();
+
+      XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Inventory"
+      );
+
+      const excelBuffer =
+        XLSX.write(
+          workbook,
+          {
+            bookType:
+              "xlsx",
+            type: "array",
+          }
+        );
+
+      const data =
+        new Blob(
+          [excelBuffer],
+          {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+          }
+        );
+
+      saveAs(
+        data,
+        `inventory_export_${Date.now()}.xlsx`
+      );
+    };
 
   return (
     <MainLayout>
       {/* FILTER BAR */}
 
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[1.2fr_auto_1fr_1fr_1fr_auto] gap-3 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-8 gap-3 items-center">
           {/* SEARCH */}
 
           <input
             type="text"
-            placeholder="Search SKU, item..."
+            placeholder="Search SKU, client, DLC..."
             value={search}
             onChange={(e) =>
               setSearch(
@@ -148,7 +292,7 @@ function Inventory() {
             className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
           />
 
-          {/* TOGGLE */}
+          {/* VIEW TOGGLE */}
 
           <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] p-1 w-fit">
             <button
@@ -248,33 +392,68 @@ function Inventory() {
             </option>
           </select>
 
-          {/* SORT */}
+          {/* CLIENT FILTER */}
 
           <select
-            value={sortBy}
+            value={clientFilter}
             onChange={(e) =>
-              setSortBy(
+              setClientFilter(
                 e.target.value
               )
             }
             className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
           >
-            <option value="latest">
-              Latest Added
+            <option value="ALL">
+              All Clients
             </option>
 
-            <option value="priceHigh">
-              Price High-Low
-            </option>
-
-            <option value="priceLow">
-              Price Low-High
-            </option>
-
-            <option value="weightHigh">
-              Weight High-Low
-            </option>
+            {uniqueClients.map(
+              (client) => (
+                <option
+                  key={client}
+                  value={client}
+                >
+                  {client}
+                </option>
+              )
+            )}
           </select>
+
+          {/* DLC FILTER */}
+
+          <select
+            value={dlcFilter}
+            onChange={(e) =>
+              setDlcFilter(
+                e.target.value
+              )
+            }
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
+          >
+            <option value="ALL">
+              All DLC
+            </option>
+
+            {uniqueDlc.map(
+              (dlc) => (
+                <option
+                  key={dlc}
+                  value={dlc}
+                >
+                  {dlc}
+                </option>
+              )
+            )}
+          </select>
+
+          {/* EXPORT */}
+
+          <button
+            onClick={exportToExcel}
+            className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-3 rounded-[16px] text-sm font-semibold transition-all"
+          >
+            Export Excel
+          </button>
 
           {/* COUNT */}
 

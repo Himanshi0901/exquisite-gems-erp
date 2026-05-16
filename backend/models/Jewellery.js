@@ -11,6 +11,14 @@ const Jewellery =
       srNo: {
         type: DataTypes.STRING,
       },
+      
+      dlcNo: {
+        type: DataTypes.STRING,
+      },
+
+      clientName: {
+        type: DataTypes.STRING,
+      },
 
       skuStNo: {
         type: DataTypes.STRING,

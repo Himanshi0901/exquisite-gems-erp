@@ -1,7 +1,7 @@
 import {
   LayoutDashboard,
   Package,
-  PlusSquare,
+  Upload,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -23,9 +23,9 @@ function Topbar() {
     },
 
     {
-      name: "Add",
+      name: "Import",
       path: "/add-item",
-      icon: PlusSquare,
+      icon: Upload,
     },
   ];
 
@@ -43,7 +43,7 @@ function Topbar() {
 
           <div className="hidden lg:block">
             <h1 className="text-lg md:text-xl font-black text-white leading-none whitespace-nowrap">
-              Exquisite Color Kraft
+              Exquisite Color Kraft Pvt Ltd
             </h1>
 
             <p className="text-[10px] md:text-[11px] text-[#c6d2dc] mt-1 tracking-wide">

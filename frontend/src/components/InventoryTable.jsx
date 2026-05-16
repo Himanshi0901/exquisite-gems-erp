@@ -167,6 +167,32 @@ function InventoryTable({
                   </span>
                 </div>
 
+                {/* CLIENT + DLC */}
+
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[10px] px-2 py-2">
+                    <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
+                      Client
+                    </p>
+
+                    <p className="text-[11px] font-bold text-[#334e68] truncate mt-1">
+                      {item.clientName ||
+                        "-"}
+                    </p>
+                  </div>
+
+                  <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[10px] px-2 py-2">
+                    <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
+                      DLC No.
+                    </p>
+
+                    <p className="text-[11px] font-bold text-[#334e68] truncate mt-1">
+                      {item.dlcNo ||
+                        "-"}
+                    </p>
+                  </div>
+                </div>
+
                 {/* DATE + REMAINING */}
 
                 {item.status !==

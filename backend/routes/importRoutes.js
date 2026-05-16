@@ -200,6 +200,16 @@ router.post(
               "SrNo"
             ],
 
+          dlcNo:
+            cleanedRow[
+              "DLC No."
+            ],
+
+          clientName:
+            cleanedRow[
+              "Client Name"
+            ],
+            
           skuStNo:
             cleanedRow[
               "SKU/St.No"

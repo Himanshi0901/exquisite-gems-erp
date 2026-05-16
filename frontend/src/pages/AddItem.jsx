@@ -7,118 +7,11 @@ import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
 
 function AddItem() {
-  const [tab, setTab] =
-    useState("manual");
-
   const [loading, setLoading] =
-    useState(false);
-
-  const [importLoading, setImportLoading] =
     useState(false);
 
   const [file, setFile] =
     useState(null);
-
-  const [form, setForm] =
-    useState({
-      skuStNo: "",
-      item: "",
-      metal: "",
-      hsn: "",
-      pcs: "",
-      description: "",
-      grossWeight: "",
-      netWeight: "",
-      metalValue: "",
-      diamondWeight: "",
-      diamondValue: "",
-      csWeight: "",
-      csValue: "",
-      otherWeight: "",
-      otherValue: "",
-      labourValue: "",
-      amount: "",
-    });
-
-  const [image, setImage] =
-    useState(null);
-
-  const handleChange = (
-    e
-  ) => {
-    setForm({
-      ...form,
-      [e.target.name]:
-        e.target.value,
-    });
-  };
-
-  const handleSubmit =
-    async (e) => {
-      e.preventDefault();
-
-      try {
-        setLoading(true);
-
-        const formData =
-          new FormData();
-
-        Object.keys(form).forEach(
-          (key) => {
-            formData.append(
-              key,
-              form[key]
-            );
-          }
-        );
-
-        if (image) {
-          formData.append(
-            "image",
-            image
-          );
-        }
-
-        await axios.post(
-          "http://localhost:5000/api/jewellery",
-          formData
-        );
-
-        alert(
-          "Jewellery item added successfully"
-        );
-
-        setForm({
-          skuStNo: "",
-          item: "",
-          metal: "",
-          hsn: "",
-          pcs: "",
-          description: "",
-          grossWeight: "",
-          netWeight: "",
-          metalValue: "",
-          diamondWeight: "",
-          diamondValue: "",
-          csWeight: "",
-          csValue: "",
-          otherWeight: "",
-          otherValue: "",
-          labourValue: "",
-          amount: "",
-        });
-
-        setImage(null);
-      } catch (error) {
-        console.log(error);
-
-        alert(
-          "Failed to add jewellery item"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
 
   const handleImport =
     async () => {
@@ -131,9 +24,7 @@ function AddItem() {
       }
 
       try {
-        setImportLoading(
-          true
-        );
+        setLoading(true);
 
         const formData =
           new FormData();
@@ -149,7 +40,7 @@ function AddItem() {
         );
 
         alert(
-          "Import successful"
+          "Inventory imported successfully"
         );
 
         setFile(null);
@@ -160,194 +51,79 @@ function AddItem() {
           "Import failed"
         );
       } finally {
-        setImportLoading(
-          false
-        );
+        setLoading(false);
       }
     };
 
-  const fields = [
-    "skuStNo",
-    "item",
-    "metal",
-    "hsn",
-    "pcs",
-    "description",
-    "grossWeight",
-    "netWeight",
-    "metalValue",
-    "diamondWeight",
-    "diamondValue",
-    "csWeight",
-    "csValue",
-    "otherWeight",
-    "otherValue",
-    "labourValue",
-    "amount",
-  ];
-
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* HEADER */}
 
-        
-        {/* TABS */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-black text-[#1f2933]">
+          </h1>
 
-        <div className="flex gap-3 mb-8">
-          <button
-            onClick={() =>
-              setTab(
-                "manual"
-              )
-            }
-            className={`px-6 py-3 rounded-[16px] font-bold transition-all
-            
-            ${
-              tab ===
-              "manual"
-                ? "bg-[#31475a] text-white shadow-lg"
-
-                : "bg-white border border-[#dfe5ea] text-[#52606d]"
-            }
-            `}
-          >
-            Manual Entry
-          </button>
-
-          <button
-            onClick={() =>
-              setTab(
-                "import"
-              )
-            }
-            className={`px-6 py-3 rounded-[16px] font-bold transition-all
-            
-            ${
-              tab ===
-              "import"
-                ? "bg-[#31475a] text-white shadow-lg"
-
-                : "bg-white border border-[#dfe5ea] text-[#52606d]"
-            }
-            `}
-          >
-            Bulk Import
-          </button>
+          <p className="text-[#6b7280] mt-2">
+            Upload inventory
+            Excel or CSV files
+            to import jewellery
+            items automatically
+          </p>
         </div>
 
-        {/* MANUAL FORM */}
+        {/* IMPORT BOX */}
 
-        {tab ===
-        "manual" ? (
-          <form
-            onSubmit={
-              handleSubmit
-            }
-            className="bg-white border border-[#dfe5ea] rounded-[32px] p-8 shadow-sm"
-          >
-            <div className="grid md:grid-cols-2 gap-5">
-              {fields.map(
-                (
-                  field
-                ) => (
-                  <input
-                    key={
-                      field
-                    }
-                    type="text"
-                    name={
-                      field
-                    }
-                    placeholder={
-                      field
-                    }
-                    value={
-                      form[
-                        field
-                      ]
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    className="bg-[#f8fafb] border border-[#dfe5ea] rounded-2xl px-5 py-4 outline-none focus:border-[#31475a] text-[#1f2933] placeholder:text-[#94a3b8] transition"
-                  />
-                )
-              )}
-            </div>
+        <div className="bg-white border border-[#dfe5ea] rounded-[32px] p-6 md:p-8 shadow-sm">
+          <div className="border-2 border-dashed border-[#cbd5df] rounded-[28px] p-8 md:p-14 text-center bg-[#f8fafb]">
+            <div className="max-w-xl mx-auto">
+              <h2 className="text-2xl font-black text-[#31475a]">
+                Upload Inventory Sheet
+              </h2>
 
-            <div className="mt-6">
-              <input
-                type="file"
-                onChange={(
-                  e
-                ) =>
-                  setImage(
-                    e.target
-                      .files[0]
-                  )
-                }
-                className="bg-[#f8fafb] border border-[#dfe5ea] rounded-2xl px-5 py-4 w-full text-[#52606d]"
-              />
-            </div>
+              <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
+                Supported formats:
+                .xlsx and .csv
+              </p>
 
-            <button
-              type="submit"
-              disabled={
-                loading
-              }
-              className="mt-8 bg-[#31475a] hover:bg-[#3d556b] text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
-            >
-              {loading
-                ? "Adding..."
-                : "Add Jewellery"}
-            </button>
-          </form>
-        ) : (
-          /* IMPORT SECTION */
-
-          <div className="bg-white border border-[#dfe5ea] rounded-[32px] p-8 shadow-sm">
-            <div className="border-2 border-dashed border-[#cbd5df] rounded-[28px] p-14 text-center bg-[#f8fafb]">
               <input
                 type="file"
                 accept=".xlsx,.csv"
-                onChange={(
-                  e
-                ) =>
+                onChange={(e) =>
                   setFile(
                     e.target
                       .files[0]
                   )
                 }
-                className="w-full bg-white border border-[#dfe5ea] p-5 rounded-[18px] text-[#52606d]"
+                className="mt-8 w-full bg-white border border-[#dfe5ea] p-5 rounded-[18px] text-[#52606d]"
               />
 
               {file && (
-                <div className="mt-6">
-                  <p className="text-[#31475a] font-semibold">
+                <div className="mt-6 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
+                  <p className="text-[#31475a] font-bold truncate">
                     {
                       file.name
                     }
                   </p>
                 </div>
               )}
-            </div>
 
-            <button
-              onClick={
-                handleImport
-              }
-              disabled={
-                importLoading
-              }
-              className="mt-8 bg-[#31475a] hover:bg-[#3d556b] text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
-            >
-              {importLoading
-                ? "Importing..."
-                : "Import Inventory"}
-            </button>
+              <button
+                onClick={
+                  handleImport
+                }
+                disabled={
+                  loading
+                }
+                className="mt-8 w-full md:w-auto bg-[#31475a] hover:bg-[#3d556b] text-white px-10 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
+              >
+                {loading
+                  ? "Importing Inventory..."
+                  : "Import Inventory"}
+              </button>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </MainLayout>
   );

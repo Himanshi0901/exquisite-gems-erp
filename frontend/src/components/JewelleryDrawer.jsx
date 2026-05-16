@@ -14,6 +14,11 @@ function JewelleryDrawer({
     setConfirmSell,
   ] = useState(false);
 
+  const [
+    confirmText,
+    setConfirmText,
+  ] = useState("");
+
   if (!item) return null;
 
   return (
@@ -212,6 +217,22 @@ function JewelleryDrawer({
                       item.hsn ||
                       "-",
                   },
+
+                  {
+                    label:
+                      "Client",
+                    value:
+                      item.clientName ||
+                      "-",
+                  },
+
+                  {
+                    label:
+                      "DLC",
+                    value:
+                      item.dlcNo ||
+                      "-",
+                  },
                 ].map(
                   (
                     detail
@@ -290,11 +311,15 @@ function JewelleryDrawer({
               {/* SOLD BUTTON */}
 
               <button
-                onClick={() =>
+                onClick={() => {
                   setConfirmSell(
                     true
-                  )
-                }
+                  );
+
+                  setConfirmText(
+                    ""
+                  );
+                }}
                 disabled={
                   item.status ===
                   "SOLD"
@@ -352,12 +377,36 @@ function JewelleryDrawer({
               className="bg-white rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.18)] w-full max-w-[420px] p-6"
             >
               <h2 className="text-[24px] font-black text-[#1f2933]">
-                Confirm Sale
+                Final Confirmation
               </h2>
 
               <p className="mt-3 text-[#52606d] leading-relaxed">
-                Are you sure you want to mark this jewellery item as sold?
+                This action will permanently mark the jewellery item as SOLD.
+
+                <span className="block mt-3 font-bold text-red-500">
+                  Please select confirmation below.
+                </span>
               </p>
+
+              <select
+                value={
+                  confirmText
+                }
+                onChange={(e) =>
+                  setConfirmText(
+                    e.target.value
+                  )
+                }
+                className="mt-5 w-full bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none"
+              >
+                <option value="">
+                  Select Confirmation
+                </option>
+
+                <option value="confirmed">
+                  Yes, Mark Item as Sold
+                </option>
+              </select>
 
               <div className="flex items-center gap-3 mt-6">
                 <button
@@ -372,6 +421,10 @@ function JewelleryDrawer({
                 </button>
 
                 <button
+                  disabled={
+                    confirmText !==
+                    "confirmed"
+                  }
                   onClick={async () => {
                     try {
                       const response =
@@ -386,24 +439,34 @@ function JewelleryDrawer({
                       if (
                         response.ok
                       ) {
-                        item.status =
-                          "SOLD";
-
                         setConfirmSell(
                           false
                         );
 
-                        onClose();
+                        window.location.reload();
                       }
                     } catch (error) {
                       console.log(
                         error
                       );
+
+                      alert(
+                        "Failed to mark as sold"
+                      );
                     }
                   }}
-                  className="flex-1 py-3 rounded-[16px] bg-green-500 hover:bg-green-600 text-white font-bold"
+                  className={`flex-1 py-3 rounded-[16px] text-white font-bold transition
+                
+                ${
+                  confirmText ===
+                  "confirmed"
+                    ? "bg-red-500 hover:bg-red-600"
+
+                    : "bg-red-200 cursor-not-allowed"
+                }
+              `}
                 >
-                  Confirm Sale
+                  YES, MARK SOLD
                 </button>
               </div>
             </motion.div>
