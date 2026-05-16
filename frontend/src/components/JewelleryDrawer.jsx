@@ -429,7 +429,7 @@ function JewelleryDrawer({
                     try {
                       const response =
                         await fetch(
-                          `http://localhost:5000/api/jewellery/${item.id}/sold`,
+                          `https://exquisite-gems-erp.onrender.com/api/jewellery/${item.id}/sold`,
                           {
                             method:
                               "PATCH",

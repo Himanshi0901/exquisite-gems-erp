@@ -20,7 +20,7 @@ export function InventoryProvider({
       try {
         const res =
           await axios.get(
-            "http://localhost:5000/api/jewellery"
+            "https://exquisite-gems-erp.onrender.com/api/jewellery"
           );
 
         setItems(res.data);
@@ -37,7 +37,7 @@ export function InventoryProvider({
     async (id) => {
       try {
         await axios.delete(
-          `http://localhost:5000/api/jewellery/${id}`
+          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}`
         );
 
         fetchItems();
@@ -50,7 +50,7 @@ export function InventoryProvider({
     async (id) => {
       try {
         await axios.patch(
-          `http://localhost:5000/api/jewellery/${id}/dubai`
+          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/dubai`
         );
 
         fetchItems();
@@ -63,7 +63,7 @@ export function InventoryProvider({
     async (id) => {
       try {
         await axios.patch(
-          `http://localhost:5000/api/jewellery/${id}/sold`
+          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/sold`
         );
 
         fetchItems();
@@ -76,7 +76,7 @@ export function InventoryProvider({
     async (id) => {
       try {
         await axios.patch(
-          `http://localhost:5000/api/jewellery/${id}/returned`
+          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/returned`
         );
 
         fetchItems();

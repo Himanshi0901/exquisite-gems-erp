@@ -35,7 +35,7 @@ function AddItem() {
         );
 
         await axios.post(
-          "http://localhost:5000/api/import",
+          "https://exquisite-gems-erp.onrender.com/api/import",
           formData
         );
 
