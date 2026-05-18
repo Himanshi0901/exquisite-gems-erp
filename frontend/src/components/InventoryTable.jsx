@@ -11,20 +11,15 @@ function InventoryTable({
   ] = useState(null);
 
   const getRemainingDays = (
-    outDate
+    expiryDate
   ) => {
-    if (!outDate)
+    if (!expiryDate)
       return null;
 
-    const start =
-      new Date(outDate);
-
     const expiry =
-      new Date(start);
-
-    expiry.setDate(
-      expiry.getDate() + 180
-    );
+      new Date(
+        expiryDate
+      );
 
     const today =
       new Date();
@@ -67,7 +62,7 @@ function InventoryTable({
         {items.map((item) => {
           const remaining =
             getRemainingDays(
-              item.outDate
+              item.expiryDate
             );
 
           return (
@@ -102,7 +97,6 @@ function InventoryTable({
                     item.status ===
                     "SOLD"
                       ? "bg-red-500 text-white"
-
                       : "bg-green-500 text-white"
                   }
                 `}
@@ -110,7 +104,6 @@ function InventoryTable({
                   {item.status ===
                   "SOLD"
                     ? "● SOLD"
-
                     : "● AVAILABLE"}
                 </div>
               </div>
@@ -200,13 +193,13 @@ function InventoryTable({
                   <div className="mt-3 flex items-center justify-between bg-[#f8fafb] border border-[#eef2f5] rounded-[12px] px-3 py-2">
                     <div>
                       <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
-                        Out Date
+                        Expiry Date
                       </p>
 
                       <p className="text-[11px] font-semibold text-[#334e68] mt-1">
-                        {item.outDate
+                        {item.expiryDate
                           ? new Date(
-                              item.outDate
+                              item.expiryDate
                             ).toLocaleDateString()
                           : "-"}
                       </p>
@@ -220,11 +213,9 @@ function InventoryTable({
                             remaining.type ===
                             "expired"
                               ? "bg-red-100 text-red-600"
-
                               : remaining.type ===
                                 "warning"
                               ? "bg-orange-100 text-orange-600"
-
                               : "bg-blue-100 text-blue-600"
                           }
                         `}
