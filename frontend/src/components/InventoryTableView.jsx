@@ -77,7 +77,7 @@ function InventoryTableView({
               </th>
 
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
-                Out Date
+                Expiry Date
               </th>
 
               <th className="p-5 text-sm text-[#7b8794] font-semibold">
@@ -222,12 +222,12 @@ function InventoryTableView({
                   ).toLocaleString()}
                 </td>
 
-                {/* OUT DATE */}
+                {/* EXPIRY DATE */}
 
                 <td className="p-4 text-[#52606d] whitespace-nowrap">
-                  {item.outDate
+                  {item.expiryDate
                     ? new Date(
-                        item.outDate
+                        item.expiryDate
                       ).toLocaleDateString()
                     : "-"}
                 </td>
@@ -242,7 +242,6 @@ function InventoryTableView({
                         item.status ===
                         "SOLD"
                           ? "bg-red-100 text-red-700"
-
                           : "bg-green-100 text-green-700"
                       }
                     `}
@@ -250,7 +249,6 @@ function InventoryTableView({
                     {item.status ===
                     "SOLD"
                       ? "SOLD"
-
                       : "AVAILABLE"}
                   </div>
                 </td>
