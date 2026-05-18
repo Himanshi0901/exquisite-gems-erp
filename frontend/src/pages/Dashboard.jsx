@@ -1,4 +1,9 @@
-import { useContext } from "react";
+import {
+  useContext,
+  useEffect,
+} from "react";
+
+import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -14,10 +19,17 @@ import DashboardHero from "../components/DashboardHero";
 
 import { InventoryContext } from "../context/InventoryContext";
 
+import { AuthContext } from "../context/AuthContext";
+
 function Dashboard() {
   const { items } =
     useContext(
       InventoryContext
+    );
+
+  const { user } =
+    useContext(
+      AuthContext
     );
 
   const soldItems =
@@ -38,7 +50,7 @@ function Dashboard() {
     items.filter(
       (item) => {
         if (
-          !item.outDate ||
+          !item.expiryDate ||
           item.status ===
             "SOLD"
         )
@@ -46,13 +58,8 @@ function Dashboard() {
 
         const expiry =
           new Date(
-            item.outDate
+            item.expiryDate
           );
-
-        expiry.setDate(
-          expiry.getDate() +
-            180
-        );
 
         const today =
           new Date();
@@ -73,6 +80,84 @@ function Dashboard() {
         );
       }
     );
+
+  /* ADMIN ALERTS */
+
+  useEffect(() => {
+    if (
+      user?.role !==
+      "ADMIN"
+    )
+      return;
+
+    const criticalItems =
+      items.filter(
+        (item) => {
+          if (
+            !item.expiryDate ||
+            item.status ===
+              "SOLD"
+          )
+            return false;
+
+          const expiry =
+            new Date(
+              item.expiryDate
+            );
+
+          const today =
+            new Date();
+
+          const diff =
+            expiry - today;
+
+          const days =
+            Math.ceil(
+              diff /
+                (1000 *
+                  60 *
+                  60 *
+                  24)
+            );
+
+          return (
+            days <= 15 &&
+            days > 0
+          );
+        }
+      );
+
+    criticalItems.forEach(
+      (item) => {
+        const expiry =
+          new Date(
+            item.expiryDate
+          );
+
+        const today =
+          new Date();
+
+        const diff =
+          expiry - today;
+
+        const days =
+          Math.ceil(
+            diff /
+              (1000 *
+                60 *
+                60 *
+                24)
+          );
+
+        toast.error(
+          `${item.dlcNo} is due to return to India in ${days} days`,
+          {
+            duration: 7000,
+          }
+        );
+      }
+    );
+  }, [items, user]);
 
   return (
     <MainLayout>
