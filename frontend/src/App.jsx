@@ -25,6 +25,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import { AuthContext } from "./context/AuthContext";
 
+import RoleProtected from "./components/RoleProtected";
+
 function App() {
   const { user } =
     useContext(
@@ -124,7 +126,9 @@ function App() {
             path="/add-item"
             element={
               <ProtectedRoute>
-                <AddItem />
+                <RoleProtected allowedRoles={["ADMIN",]}>
+                  <AddItem />
+                </RoleProtected>
               </ProtectedRoute>
             }
           />

@@ -2,18 +2,35 @@ import {
   LayoutDashboard,
   Package,
   Upload,
+  LogOut,
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
+import {
+  NavLink,
+} from "react-router-dom";
+
+import {
+  useContext,
+} from "react";
+
+import { AuthContext } from "../context/AuthContext";
 
 import logo from "../assets/logo.png";
 
 function Topbar() {
+  const {
+    user,
+    logout,
+  } = useContext(
+    AuthContext
+  );
+
   const links = [
     {
       name: "Dashboard",
       path: "/",
-      icon: LayoutDashboard,
+      icon:
+        LayoutDashboard,
     },
 
     {
@@ -22,11 +39,17 @@ function Topbar() {
       icon: Package,
     },
 
-    {
-      name: "Import",
-      path: "/add-item",
-      icon: Upload,
-    },
+    ...(user?.role ===
+    "ADMIN"
+      ? [
+          {
+            name: "Import",
+            path:
+              "/add-item",
+            icon: Upload,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -95,8 +118,36 @@ function Topbar() {
 
         {/* PROFILE */}
 
-        <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-[#31475a] flex items-center justify-center font-black text-sm shadow-sm min-w-fit">
-          A
+        <div className="flex items-center gap-2">
+          {/* ROLE */}
+
+          <div className="hidden md:flex items-center px-3 py-2 rounded-[14px] bg-white/10 border border-white/10 text-white text-xs font-bold tracking-wide">
+            {user?.role}
+          </div>
+
+          {/* USER */}
+
+          <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-[#31475a] flex items-center justify-center font-black text-sm shadow-sm min-w-fit">
+            {user?.name?.charAt(
+              0
+            )}
+          </div>
+
+          {/* LOGOUT */}
+
+          <button
+            onClick={() => {
+              logout();
+
+              window.location.href =
+                "/login";
+            }}
+            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center shadow-sm transition-all"
+          >
+            <LogOut
+              size={16}
+            />
+          </button>
         </div>
       </div>
     </div>
