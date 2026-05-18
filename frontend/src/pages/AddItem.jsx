@@ -29,6 +29,13 @@ function AddItem() {
     setImageFiles,
   ] = useState([]);
 
+  const [
+    zipFile,
+    setZipFile,
+  ] = useState(null);
+
+  /* IMAGE SELECT */
+
   const handleImageSelect =
     (files) => {
       const validFiles =
@@ -41,7 +48,9 @@ function AddItem() {
       );
     };
 
-  const handleDrop =
+  /* IMAGE DRAG DROP */
+
+  const handleImageDrop =
     (e) => {
       e.preventDefault();
 
@@ -55,14 +64,61 @@ function AddItem() {
       }
     };
 
+  /* EXCEL DRAG DROP */
+
+  const handleExcelDrop =
+    (e) => {
+      e.preventDefault();
+
+      if (
+        e.dataTransfer.files &&
+        e.dataTransfer.files[0]
+      ) {
+        setExcelFile(
+          e.dataTransfer
+            .files[0]
+        );
+      }
+    };
+
+  /* ZIP DROP */
+
+  const handleZipDrop =
+    (e) => {
+      e.preventDefault();
+
+      if (
+        e.dataTransfer.files &&
+        e.dataTransfer.files[0]
+      ) {
+        setZipFile(
+          e.dataTransfer
+            .files[0]
+        );
+      }
+    };
+
+  /* IMPORT */
+
   const handleImport =
     async () => {
       if (
-        !excelFile ||
-        imageFiles.length === 0
+        !excelFile
       ) {
         alert(
-          "Please select Excel and Images"
+          "Please upload Excel file"
+        );
+
+        return;
+      }
+
+      if (
+        imageFiles.length ===
+          0 &&
+        !zipFile
+      ) {
+        alert(
+          "Please upload images or ZIP"
         );
 
         return;
@@ -79,6 +135,8 @@ function AddItem() {
           excelFile
         );
 
+        /* MULTIPLE IMAGES */
+
         imageFiles.forEach(
           (file) => {
             formData.append(
@@ -87,6 +145,15 @@ function AddItem() {
             );
           }
         );
+
+        /* ZIP */
+
+        if (zipFile) {
+          formData.append(
+            "zip",
+            zipFile
+          );
+        }
 
         await axios.post(
           "https://exquisite-gems-erp.onrender.com/api/import",
@@ -109,6 +176,10 @@ function AddItem() {
 
         setImageFiles(
           []
+        );
+
+        setZipFile(
+          null
         );
 
         navigate(
@@ -137,9 +208,8 @@ function AddItem() {
         <div className="mb-8">
           <p className="text-[#6b7280] mt-2">
             Upload inventory
-            Excel file along
-            with jewellery
-            images.
+            Excel file with
+            jewellery images.
           </p>
         </div>
 
@@ -155,21 +225,45 @@ function AddItem() {
               </h2>
 
               <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
-                Supported formats:
-                .xlsx and .csv
+                Drag & drop or
+                select Excel file
               </p>
 
-              <input
-                type="file"
-                accept=".xlsx,.csv"
-                onChange={(e) =>
-                  setExcelFile(
-                    e.target
-                      .files[0]
-                  )
+              <div
+                onDragOver={(
+                  e
+                ) =>
+                  e.preventDefault()
                 }
-                className="mt-8 w-full bg-white border border-[#dfe5ea] p-5 rounded-[18px] text-[#52606d]"
-              />
+                onDrop={
+                  handleExcelDrop
+                }
+                className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
+              >
+                <p className="text-[#52606d] font-semibold">
+                  Drag & Drop
+                  Excel Here
+                </p>
+
+                <p className="text-sm text-[#7b8794] mt-2">
+                  XLSX & CSV
+                  supported
+                </p>
+
+                <input
+                  type="file"
+                  accept=".xlsx,.csv"
+                  onChange={(
+                    e
+                  ) =>
+                    setExcelFile(
+                      e.target
+                        .files[0]
+                    )
+                  }
+                  className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px] text-[#52606d]"
+                />
+              </div>
 
               {excelFile && (
                 <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
@@ -189,12 +283,12 @@ function AddItem() {
                 </h2>
 
                 <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
-                  Select multiple
-                  images or drag &
-                  drop images here.
+                  Upload multiple
+                  images OR ZIP
+                  file
                 </p>
 
-                {/* DRAG DROP */}
+                {/* IMAGE DROP */}
 
                 <div
                   onDragOver={(
@@ -203,7 +297,7 @@ function AddItem() {
                     e.preventDefault()
                   }
                   onDrop={
-                    handleDrop
+                    handleImageDrop
                   }
                   className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
                 >
@@ -232,6 +326,46 @@ function AddItem() {
                     className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px] text-[#52606d]"
                   />
                 </div>
+
+                {/* ZIP */}
+
+                <div
+                  onDragOver={(
+                    e
+                  ) =>
+                    e.preventDefault()
+                  }
+                  onDrop={
+                    handleZipDrop
+                  }
+                  className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
+                >
+                  <p className="text-[#52606d] font-semibold">
+                    Drag & Drop ZIP
+                    Here
+                  </p>
+
+                  <p className="text-sm text-[#7b8794] mt-2">
+                    ZIP upload also
+                    supported
+                  </p>
+
+                  <input
+                    type="file"
+                    accept=".zip"
+                    onChange={(
+                      e
+                    ) =>
+                      setZipFile(
+                        e.target
+                          .files[0]
+                      )
+                    }
+                    className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px] text-[#52606d]"
+                  />
+                </div>
+
+                {/* IMAGE FILES */}
 
                 {imageFiles.length >
                   0 && (
@@ -265,6 +399,19 @@ function AddItem() {
                         )
                       )}
                     </div>
+                  </div>
+                )}
+
+                {/* ZIP FILE */}
+
+                {zipFile && (
+                  <div className="mt-5 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
+                    <p className="text-[#31475a] font-bold truncate">
+                      ZIP:{" "}
+                      {
+                        zipFile.name
+                      }
+                    </p>
                   </div>
                 )}
               </div>
@@ -308,6 +455,11 @@ function AddItem() {
                   <li>
                     Multiple image
                     upload supported
+                  </li>
+
+                  <li>
+                    ZIP upload
+                    supported
                   </li>
 
                   <li>
