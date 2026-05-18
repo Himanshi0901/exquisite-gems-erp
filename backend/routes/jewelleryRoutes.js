@@ -167,6 +167,9 @@ router.patch(
           dubaiSentAt:
             today,
 
+          sentDate:
+            today,
+
           expiryDate:
             expiryDate,
         },
@@ -199,6 +202,9 @@ router.patch(
       await Jewellery.update(
         {
           status: "SOLD",
+
+          soldDate:
+            new Date(),
         },
         {
           where: {

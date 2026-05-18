@@ -31,13 +31,7 @@ function JewelleryDrawer({
   ) =>
     Number(
       value || 0
-    ).toLocaleString(
-      undefined,
-      {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }
-    );
+    ).toFixed(2);
 
   if (!item) return null;
 
@@ -300,7 +294,7 @@ function JewelleryDrawer({
 
               {/* INFO */}
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 mt-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 mt-2">
                 <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[14px] p-2.5">
                   <p className="text-[7px] uppercase text-[#7b8794]">
                     Sent Date
@@ -324,6 +318,20 @@ function JewelleryDrawer({
                     {item.expiryDate
                       ? new Date(
                           item.expiryDate
+                        ).toLocaleDateString()
+                      : "-"}
+                  </p>
+                </div>
+
+                <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[14px] p-2.5">
+                  <p className="text-[7px] uppercase text-[#7b8794]">
+                    Sold Date
+                  </p>
+
+                  <p className="mt-1 text-[11px] font-bold text-[#1f2933]">
+                    {item.soldDate
+                      ? new Date(
+                          item.soldDate
                         ).toLocaleDateString()
                       : "-"}
                   </p>

@@ -110,11 +110,18 @@ const Jewellery =
           DataTypes.NOW,
       },
 
-      // AUTO EXPIRY DATE
-      // 6 months after sent date
+      // EXPIRY DATE
 
       expiryDate: {
         type: DataTypes.DATE,
+      },
+
+      // SOLD DATE
+
+      soldDate: {
+        type: DataTypes.DATE,
+
+        allowNull: true,
       },
     }
   );
