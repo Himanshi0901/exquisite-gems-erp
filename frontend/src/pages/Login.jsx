@@ -96,7 +96,7 @@ function Login() {
                 e.target.value
               )
             }
-            className="w-full bg-[#f8fafb] border border-[#dfe5ea] rounded-[18px] px-5 py-4 outline-none"
+            className="w-full text-[#31475a] bg-[#f8fafb] border border-[#dfe5ea] rounded-[18px] px-5 py-4 outline-none"
           />
 
           <input
@@ -108,7 +108,7 @@ function Login() {
                 e.target.value
               )
             }
-            className="w-full bg-[#f8fafb] border border-[#dfe5ea] rounded-[18px] px-5 py-4 outline-none"
+            className="w-full text-[#31475a]  bg-[#f8fafb] border border-[#dfe5ea] rounded-[18px] px-5 py-4 outline-none"
           />
 
           <button
