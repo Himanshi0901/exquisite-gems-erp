@@ -86,7 +86,7 @@ function InventoryTableView({
   return (
     <>
       <div className="overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
-        <table className="w-full min-w-[2300px] bg-white">
+        <table className="w-full min-w-[2450px] bg-white">
           <thead className="sticky top-0 z-20 bg-[#f4f7fa] backdrop-blur-md">
             <tr className="border-b border-[#e6ebef] text-left">
               {[
@@ -106,6 +106,7 @@ function InventoryTableView({
                 "Labour",
                 "Total Amount",
                 "Expiry Date",
+                "Sold Date",
                 "Remaining",
                 "Status",
               ].map(
@@ -280,6 +281,16 @@ function InventoryTableView({
                     {item.expiryDate
                       ? new Date(
                           item.expiryDate
+                        ).toLocaleDateString()
+                      : "-"}
+                  </td>
+
+                  {/* SOLD DATE */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {item.soldDate
+                      ? new Date(
+                          item.soldDate
                         ).toLocaleDateString()
                       : "-"}
                   </td>
