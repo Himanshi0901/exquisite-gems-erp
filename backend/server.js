@@ -63,7 +63,9 @@ sequelize
       "Database Connected"
     );
 
-    return sequelize.sync();
+    return sequelize.sync({
+      alter: true,
+    });
   })
 
   .then(() => {
