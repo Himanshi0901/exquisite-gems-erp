@@ -15,9 +15,14 @@ export function InventoryProvider({
   const [items, setItems] =
     useState([]);
 
+  const [loading, setLoading] =
+    useState(true);
+
   const fetchItems =
     async () => {
       try {
+        setLoading(true);
+
         const res =
           await axios.get(
             "https://exquisite-gems-erp.onrender.com/api/jewellery"
@@ -26,6 +31,8 @@ export function InventoryProvider({
         setItems(res.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -89,6 +96,7 @@ export function InventoryProvider({
     <InventoryContext.Provider
       value={{
         items,
+        loading,
         fetchItems,
         deleteItem,
         sendToDubai,

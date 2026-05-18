@@ -28,7 +28,7 @@ function AnalyticsChart({
     items.filter(
       (item) => {
         if (
-          !item.outDate ||
+          !item.expiryDate ||
           item.status ===
             "SOLD"
         )
@@ -36,13 +36,8 @@ function AnalyticsChart({
 
         const expiry =
           new Date(
-            item.outDate
+            item.expiryDate
           );
-
-        expiry.setDate(
-          expiry.getDate() +
-            180
-        );
 
         const today =
           new Date();
@@ -92,73 +87,78 @@ function AnalyticsChart({
   ];
 
   return (
-    <div className="bg-white border border-[#dfe5ea] rounded-[24px] p-5 md:p-6 h-[380px] shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+    <div className="bg-white border border-[#dfe5ea] rounded-[24px] p-5 md:p-6 h-[420px] shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
       {/* HEADER */}
 
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-[#1f2933]">
+          <h2 className="text-xl md:text-2xl font-black text-[#1f2933]">
             Inventory Overview
           </h2>
 
           <p className="text-[#7b8794] text-sm mt-1">
-            Live showroom
-            inventory analytics
+            Live showroom analytics
           </p>
         </div>
 
         <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
       </div>
 
-      {/* CHART */}
+      {/* EMPTY */}
 
-      <ResponsiveContainer
-        width="100%"
-        height="82%"
-      >
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            outerRadius={110}
-            innerRadius={68}
-            paddingAngle={4}
-          >
-            {data.map(
-              (
-                entry,
-                index
-              ) => (
-                <Cell
-                  key={index}
-                  fill={
-                    COLORS[index]
-                  }
-                />
-              )
-            )}
-          </Pie>
+      {items.length === 0 ? (
+        <div className="flex items-center justify-center h-[300px] text-[#7b8794] font-semibold">
+          Loading analytics...
+        </div>
+      ) : (
+        <ResponsiveContainer
+          width="100%"
+          height="85%"
+        >
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              outerRadius={115}
+              innerRadius={70}
+              paddingAngle={4}
+            >
+              {data.map(
+                (
+                  entry,
+                  index
+                ) => (
+                  <Cell
+                    key={index}
+                    fill={
+                      COLORS[index]
+                    }
+                  />
+                )
+              )}
+            </Pie>
 
-          <Tooltip
-            contentStyle={{
-              borderRadius:
-                "16px",
-              border:
-                "1px solid #dfe5ea",
-              background:
-                "#ffffff",
-              fontSize:
-                "13px",
-            }}
-          />
+            <Tooltip
+              contentStyle={{
+                borderRadius:
+                  "16px",
+                border:
+                  "1px solid #dfe5ea",
+                background:
+                  "#ffffff",
+                fontSize:
+                  "13px",
+              }}
+            />
 
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            iconType="circle"
-          />
-        </PieChart>
-      </ResponsiveContainer>
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }

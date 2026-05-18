@@ -1,70 +1,104 @@
+import {
+  useState,
+} from "react";
+
 function ExpiryAlerts({
   items,
 }) {
+  const [
+    dismissed,
+    setDismissed,
+  ] = useState(false);
+
   const alerts =
     items.filter((item) => {
       if (
-        item.status !==
-          "IN_DUBAI" ||
-        !item.returnDeadline
+        item.status ===
+          "SOLD" ||
+        !item.expiryDate
       )
         return false;
 
       const today =
         new Date();
 
-      const deadline =
+      const expiry =
         new Date(
-          item.returnDeadline
+          item.expiryDate
         );
 
       const diff =
         Math.ceil(
-          (deadline - today) /
+          (expiry - today) /
             (1000 *
               60 *
               60 *
               24)
         );
 
-      return diff <= 5 && diff > 0;
+      return (
+        diff <= 15 &&
+        diff > 0
+      );
     });
 
-  if (alerts.length === 0)
+  if (
+    alerts.length === 0 ||
+    dismissed
+  )
     return null;
 
   return (
-    <div className="bg-white border border-[#dfe5ea] rounded-[24px] p-6 mb-8 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white border border-[#dfe5ea] rounded-[24px] p-4 md:p-6 mb-8 shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
+      {/* HEADER */}
+
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-[#1f2933]">
+          <h2 className="text-xl md:text-2xl font-black text-[#1f2933]">
             Expiry Alerts
           </h2>
 
           <p className="text-[#7b8794] text-sm mt-1">
             Jewellery nearing
-            return deadline
+            India return
+            deadline
           </p>
         </div>
 
-        <div className="px-4 py-2 rounded-2xl bg-red-100 text-red-700 text-sm font-semibold">
-          {alerts.length} Alerts
+        <div className="flex items-center gap-3">
+          <div className="px-4 py-2 rounded-2xl bg-red-100 text-red-700 text-sm font-bold whitespace-nowrap">
+            {alerts.length}{" "}
+            Alerts
+          </div>
+
+          <button
+            onClick={() =>
+              setDismissed(
+                true
+              )
+            }
+            className="px-4 py-2 rounded-2xl bg-[#31475a] hover:bg-[#3d556b] text-white text-sm font-semibold transition-all"
+          >
+            OK
+          </button>
         </div>
       </div>
 
-      <div className="space-y-4">
+      {/* ALERTS */}
+
+      <div className="space-y-3">
         {alerts.map((item) => {
           const today =
             new Date();
 
-          const deadline =
+          const expiry =
             new Date(
-              item.returnDeadline
+              item.expiryDate
             );
 
           const diff =
             Math.ceil(
-              (deadline - today) /
+              (expiry - today) /
                 (1000 *
                   60 *
                   60 *
@@ -74,35 +108,72 @@ function ExpiryAlerts({
           return (
             <div
               key={item.id}
-              className="flex items-center justify-between bg-[#f8fafb] border border-[#dfe5ea] rounded-2xl p-4 hover:border-[#b8c6d2] transition-all duration-300"
+              className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 rounded-2xl p-4 border transition-all duration-300
+              
+              ${
+                diff <= 5
+                  ? "bg-red-50 border-red-200"
+
+                  : "bg-orange-50 border-orange-200"
+              }
+            `}
             >
-              <div className="flex items-center gap-4">
+              {/* LEFT */}
+
+              <div className="flex items-center gap-4 min-w-0">
                 <img
                   src={
-                    item.image
+                    item.image ||
+                    "https://via.placeholder.com/100"
                   }
                   alt={
-                    item.name
+                    item.skuStNo
                   }
-                  className="w-14 h-14 rounded-xl object-cover bg-white border border-[#dfe5ea]"
+                  onError={(
+                    e
+                  ) => {
+                    e.target.src =
+                      "https://via.placeholder.com/100";
+                  }}
+                  className="w-14 h-14 rounded-xl object-cover bg-white border border-[#dfe5ea] flex-shrink-0"
                 />
 
-                <div>
-                  <h3 className="font-semibold text-[#1f2933]">
+                <div className="min-w-0">
+                  <h3 className="font-black text-[#1f2933] break-words">
                     {
-                      item.name
+                      item.skuStNo
                     }
                   </h3>
 
-                  <p className="text-sm text-[#7b8794]">
+                  <p className="text-sm text-[#52606d] mt-1 break-words">
+                    DLC No:{" "}
                     {
-                      item.itemCode
+                      item.dlcNo
                     }
+                  </p>
+
+                  <p className="text-xs text-[#7b8794] mt-1">
+                    Expiry:{" "}
+                    {new Date(
+                      item.expiryDate
+                    ).toLocaleDateString()}
                   </p>
                 </div>
               </div>
 
-              <div className="px-4 py-2 rounded-xl bg-red-100 text-red-700 font-semibold text-sm">
+              {/* RIGHT */}
+
+              <div
+                className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap text-center
+                
+                ${
+                  diff <= 5
+                    ? "bg-red-100 text-red-700"
+
+                    : "bg-orange-100 text-orange-700"
+                }
+              `}
+              >
                 {diff} days left
               </div>
             </div>

@@ -2,7 +2,10 @@ import {
   useContext,
   useMemo,
   useState,
+  useEffect,
 } from "react";
+
+import toast from "react-hot-toast";
 
 import * as XLSX from "xlsx";
 
@@ -42,6 +45,77 @@ function Inventory() {
 
   const [sortBy, setSortBy] =
     useState("latest");
+
+  /* ALERTS */
+
+  useEffect(() => {
+    const criticalItems =
+      items.filter((item) => {
+        if (
+          !item.expiryDate ||
+          item.status === "SOLD"
+        )
+          return false;
+
+        const expiry =
+          new Date(
+            item.expiryDate
+          );
+
+        const today =
+          new Date();
+
+        const diff =
+          expiry - today;
+
+        const days =
+          Math.ceil(
+            diff /
+              (1000 *
+                60 *
+                60 *
+                24)
+          );
+
+        return (
+          days <= 15 &&
+          days > 0
+        );
+      });
+
+    criticalItems.forEach(
+      (item) => {
+        const expiry =
+          new Date(
+            item.expiryDate
+          );
+
+        const today =
+          new Date();
+
+        const diff =
+          expiry - today;
+
+        const days =
+          Math.ceil(
+            diff /
+              (1000 *
+                60 *
+                60 *
+                24)
+          );
+
+        toast(
+          `${item.dlcNo} is due to return to India in ${days} days`,
+          {
+            duration: 8000,
+
+            icon: "⚠️",
+          }
+        );
+      }
+    );
+  }, [items]);
 
   const uniqueClients =
     [
@@ -231,6 +305,23 @@ function Inventory() {
 
             Description:
               item.description,
+
+            "Sent Date":
+              item.sentDate
+                ? new Date(
+                    item.sentDate
+                  ).toLocaleDateString()
+                : "-",
+
+            "Expiry Date":
+              item.expiryDate
+                ? new Date(
+                    item.expiryDate
+                  ).toLocaleDateString()
+                : "-",
+
+            Image:
+              item.image || "",
           })
         );
 
@@ -272,12 +363,22 @@ function Inventory() {
       );
     };
 
+  if (!items.length) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center h-[60vh] text-[#52606d] text-lg font-semibold">
+          Loading inventory...
+        </div>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       {/* FILTER BAR */}
 
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-8 gap-2 md:gap-3 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2 md:gap-3 items-center">
           {/* SEARCH */}
 
           <input
@@ -307,7 +408,6 @@ function Inventory() {
                   viewMode ===
                   "grid"
                     ? "bg-[#31475a] text-white"
-
                     : "text-[#52606d]"
                 }
               `}
@@ -327,7 +427,6 @@ function Inventory() {
                   viewMode ===
                   "table"
                     ? "bg-[#31475a] text-white"
-
                     : "text-[#52606d]"
                 }
               `}
@@ -450,14 +549,14 @@ function Inventory() {
 
           <button
             onClick={exportToExcel}
-            className="col-span-2 md:col-span-1 bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all"
+            className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all"
           >
             Export Excel
           </button>
 
           {/* COUNT */}
 
-          <div className="flex items-center justify-center bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-5 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
+          <div className="flex items-center justify-center min-w-[120px] bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-5 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
             {filteredItems.length}{" "}
             Items
           </div>

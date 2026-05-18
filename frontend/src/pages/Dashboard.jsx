@@ -1,6 +1,7 @@
 import {
   useContext,
   useEffect,
+  useMemo,
 } from "react";
 
 import toast from "react-hot-toast";
@@ -32,64 +33,72 @@ function Dashboard() {
       AuthContext
     );
 
+  /* MEMOIZED DATA */
+
   const soldItems =
-    items.filter(
-      (item) =>
-        item.status ===
-        "SOLD"
+    useMemo(
+      () =>
+        items.filter(
+          (item) =>
+            item.status ===
+            "SOLD"
+        ),
+      [items]
     );
 
   const availableItems =
-    items.filter(
-      (item) =>
-        item.status !==
-        "SOLD"
+    useMemo(
+      () =>
+        items.filter(
+          (item) =>
+            item.status !==
+            "SOLD"
+        ),
+      [items]
     );
 
   const expiringSoon =
-    items.filter(
-      (item) => {
-        if (
-          !item.expiryDate ||
-          item.status ===
-            "SOLD"
-        )
-          return false;
+    useMemo(
+      () =>
+        items.filter(
+          (item) => {
+            if (
+              !item.expiryDate ||
+              item.status ===
+                "SOLD"
+            )
+              return false;
 
-        const expiry =
-          new Date(
-            item.expiryDate
-          );
+            const expiry =
+              new Date(
+                item.expiryDate
+              );
 
-        const today =
-          new Date();
+            const today =
+              new Date();
 
-        const diff =
-          expiry - today;
+            const diff =
+              expiry - today;
 
-        const days =
-          diff /
-          (1000 *
-            60 *
-            60 *
-            24);
+            const days =
+              diff /
+              (1000 *
+                60 *
+                60 *
+                24);
 
-        return (
-          days <= 30 &&
-          days > 0
-        );
-      }
+            return (
+              days <= 30 &&
+              days > 0
+            );
+          }
+        ),
+      [items]
     );
 
-  /* ADMIN ALERTS */
+  /* ALERTS */
 
   useEffect(() => {
-    if (
-      user?.role !==
-      "ADMIN"
-    )
-      return;
-
     const criticalItems =
       items.filter(
         (item) => {
@@ -155,21 +164,48 @@ function Dashboard() {
             duration: 7000,
           }
         );
-      }
-    );
+      });
   }, [items, user]);
+
+  /* LOADING */
+
+  if (!items.length) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-[#dfe5ea] border-t-[#31475a] rounded-full animate-spin mx-auto" />
+
+            <p className="mt-5 text-[#52606d] font-semibold">
+              Loading dashboard...
+            </p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
-      <DashboardHero
-        items={items}
-      />
+      {/* HERO */}
 
-      <ExpiryAlerts
-        items={items}
-      />
+      <div className="mb-6">
+        <DashboardHero
+          items={items}
+        />
+      </div>
 
-      <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-4 mb-8">
+      {/* ALERTS */}
+
+      <div className="mb-6">
+        <ExpiryAlerts
+          items={items}
+        />
+      </div>
+
+      {/* STATS */}
+
+      <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-3 md:gap-4 mb-8">
         <StatCard
           title="Total Inventory"
           value={
@@ -199,16 +235,24 @@ function Dashboard() {
         />
       </div>
 
-      <div className="grid xl:grid-cols-3 grid-cols-1 gap-6">
+      {/* MAIN GRID */}
+
+      <div className="grid xl:grid-cols-3 grid-cols-1 gap-5 md:gap-6">
+        {/* CHART */}
+
         <div className="xl:col-span-2">
           <AnalyticsChart
             items={items}
           />
         </div>
 
-        <RecentActivity
-          items={items}
-        />
+        {/* ACTIVITY */}
+
+        <div>
+          <RecentActivity
+            items={items}
+          />
+        </div>
       </div>
     </MainLayout>
   );

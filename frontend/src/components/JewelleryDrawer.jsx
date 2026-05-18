@@ -79,14 +79,14 @@ function JewelleryDrawer({
               {/* HEADER */}
 
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h1 className="text-[22px] md:text-[28px] leading-none font-black text-[#1f2933]">
+                <div className="min-w-0">
+                  <h1 className="text-[22px] md:text-[28px] leading-none font-black text-[#1f2933] break-words">
                     {
                       item.skuStNo
                     }
                   </h1>
 
-                  <p className="mt-1 text-[#7b8794] uppercase text-[11px] tracking-wide">
+                  <p className="mt-1 text-[#7b8794] uppercase text-[11px] tracking-wide break-words">
                     {
                       item.item
                     }
@@ -97,7 +97,7 @@ function JewelleryDrawer({
                   onClick={
                     onClose
                   }
-                  className="w-9 h-9 rounded-full bg-[#f1f5f9] border border-[#dfe5ea] flex items-center justify-center text-lg text-[#52606d]"
+                  className="w-9 h-9 rounded-full bg-[#f1f5f9] border border-[#dfe5ea] flex items-center justify-center text-lg text-[#52606d] min-w-[36px]"
                 >
                   ×
                 </button>
@@ -126,7 +126,7 @@ function JewelleryDrawer({
 
               {/* DETAILS GRID */}
 
-              <div className="grid grid-cols-3 gap-1.5 mt-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 mt-3">
                 {[
                   {
                     label:
@@ -249,7 +249,7 @@ function JewelleryDrawer({
                         }
                       </p>
 
-                      <h3 className="text-[11px] md:text-[12px] font-black text-[#1f2933] mt-1 truncate">
+                      <h3 className="text-[11px] md:text-[12px] font-black text-[#1f2933] mt-1 break-words whitespace-normal leading-relaxed">
                         {
                           detail.value
                         }
@@ -266,7 +266,7 @@ function JewelleryDrawer({
                   Description
                 </p>
 
-                <p className="mt-1 text-[11px] leading-relaxed text-[#334e68]">
+                <p className="mt-1 text-[11px] leading-relaxed text-[#334e68] break-words whitespace-pre-wrap">
                   {item.description ||
                     "No description available"}
                 </p>
@@ -274,7 +274,21 @@ function JewelleryDrawer({
 
               {/* INFO */}
 
-              <div className="grid grid-cols-2 gap-1.5 mt-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 mt-2">
+                <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[14px] p-2.5">
+                  <p className="text-[7px] uppercase text-[#7b8794]">
+                    Sent Date
+                  </p>
+
+                  <p className="mt-1 text-[11px] font-bold text-[#1f2933]">
+                    {item.sentDate
+                      ? new Date(
+                          item.sentDate
+                        ).toLocaleDateString()
+                      : "-"}
+                  </p>
+                </div>
+
                 <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[14px] p-2.5">
                   <p className="text-[7px] uppercase text-[#7b8794]">
                     Expiry Date
@@ -294,7 +308,7 @@ function JewelleryDrawer({
                     Total Value
                   </p>
 
-                  <h2 className="mt-1 text-[18px] md:text-[22px] leading-none font-black text-[#1f2933]">
+                  <h2 className="mt-1 text-[18px] md:text-[22px] leading-none font-black text-[#1f2933] break-words">
                     $
                     {Number(
                       item.amount ||

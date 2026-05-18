@@ -48,6 +48,11 @@ router.post(
       name: "zip",
       maxCount: 1,
     },
+
+    {
+      name: "images",
+      maxCount: 500,
+    },
   ]),
 
   async (req, res) => {
@@ -55,12 +60,26 @@ router.post(
       const excelFile =
         req.files[
           "excel"
-        ][0];
+        ]?.[0];
 
       const zipFile =
         req.files[
           "zip"
-        ][0];
+        ]?.[0];
+
+      const imageFiles =
+        req.files[
+          "images"
+        ] || [];
+
+      if (!excelFile) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Excel file is required",
+          });
+      }
 
       const workbook =
         XLSX.readFile(
@@ -77,12 +96,7 @@ router.post(
           ]
         );
 
-      /* ---------------- ZIP EXTRACTION ---------------- */
-
-      const zip =
-        new AdmZip(
-          zipFile.path
-        );
+      /* ---------------- TEMP IMAGE FOLDER ---------------- */
 
       const extractPath =
         path.join(
@@ -103,15 +117,62 @@ router.post(
         );
       }
 
-      zip.extractAllTo(
-        extractPath,
-        true
-      );
+      /* ---------------- ZIP EXTRACTION ---------------- */
+
+      if (zipFile) {
+        const zip =
+          new AdmZip(
+            zipFile.path
+          );
+
+        zip.extractAllTo(
+          extractPath,
+          true
+        );
+      }
+
+      /* ---------------- MANUAL IMAGE COPY ---------------- */
+
+      for (const image of imageFiles) {
+        const targetPath =
+          path.join(
+            extractPath,
+            image.originalname
+          );
+
+        fs.copyFileSync(
+          image.path,
+          targetPath
+        );
+      }
 
       console.log(
         "HEADERS:",
-        Object.keys(data[0])
+        Object.keys(
+          data[0] || {}
+        )
       );
+
+      /* ---------------- EXISTING SKU CACHE ---------------- */
+
+      const existingItems =
+        await Jewellery.findAll(
+          {
+            attributes: [
+              "skuStNo",
+            ],
+          }
+        );
+
+      const existingSkuSet =
+        new Set(
+          existingItems.map(
+            (i) =>
+              i.skuStNo
+          )
+        );
+
+      /* ---------------- IMPORT LOOP ---------------- */
 
       for (const row of data) {
         const cleanedRow =
@@ -141,20 +202,15 @@ router.post(
           continue;
         }
 
-        const existing =
-          await Jewellery.findOne(
-            {
-              where: {
-                skuStNo:
-                  cleanedRow[
-                    "SKU/St.No"
-                  ],
-              },
-            }
-          );
-
-        if (existing)
+        if (
+          existingSkuSet.has(
+            cleanedRow[
+              "SKU/St.No"
+            ]
+          )
+        ) {
           continue;
+        }
 
         const sku =
           String(
@@ -165,9 +221,6 @@ router.post(
             .split("/")[0]
             .trim();
 
-        const imageFolder =
-          extractPath;
-
         let imageUrl =
           "";
 
@@ -176,7 +229,6 @@ router.post(
             ".jpg",
             ".jpeg",
             ".png",
-            ".webp",
           ];
 
         let foundImage =
@@ -185,7 +237,7 @@ router.post(
         for (const ext of possibleExtensions) {
           const imagePath =
             path.join(
-              imageFolder,
+              extractPath,
               `${sku}${ext}`
             );
 
@@ -201,6 +253,8 @@ router.post(
           }
         }
 
+        /* ---------------- IMAGE UPLOAD ---------------- */
+
         if (
           foundImage
         ) {
@@ -209,9 +263,12 @@ router.post(
               foundImage
             );
 
-          const fileName = `${sku}-${Date.now()}.${foundImage
-            .split(".")
-            .pop()}`;
+          const extension =
+            foundImage
+              .split(".")
+              .pop();
+
+          const fileName = `${sku}-${Date.now()}.${extension}`;
 
           const {
             error,
@@ -259,6 +316,21 @@ router.post(
             `Image not found for SKU: ${sku}`
           );
         }
+
+        /* ---------------- DATES ---------------- */
+
+        const sentDate =
+          new Date();
+
+        const expiryDate =
+          new Date();
+
+        expiryDate.setMonth(
+          expiryDate.getMonth() +
+            6
+        );
+
+        /* ---------------- SAVE ---------------- */
 
         await Jewellery.create(
           {
@@ -368,21 +440,9 @@ router.post(
             status:
               "IN_STOCK",
 
-            sentDate:
-              new Date(),
+            sentDate,
 
-            expiryDate:
-              (() => {
-                const date =
-                  new Date();
-
-                date.setMonth(
-                  date.getMonth() +
-                    6
-                );
-
-                return date;
-              })(),
+            expiryDate,
           }
         );
       }
@@ -394,6 +454,42 @@ router.post(
         {
           recursive: true,
           force: true,
+        }
+      );
+
+      if (
+        excelFile?.path &&
+        fs.existsSync(
+          excelFile.path
+        )
+      ) {
+        fs.unlinkSync(
+          excelFile.path
+        );
+      }
+
+      if (
+        zipFile?.path &&
+        fs.existsSync(
+          zipFile.path
+        )
+      ) {
+        fs.unlinkSync(
+          zipFile.path
+        );
+      }
+
+      imageFiles.forEach(
+        (file) => {
+          if (
+            fs.existsSync(
+              file.path
+            )
+          ) {
+            fs.unlinkSync(
+              file.path
+            );
+          }
         }
       );
 
