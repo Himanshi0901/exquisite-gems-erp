@@ -12,16 +12,21 @@ const path = require("path");
 
 const mime = require("mime-types");
 
+const AdmZip =
+  require("adm-zip");
+
 const {
   createClient,
 } = require("@supabase/supabase-js");
 
-const Jewellery = require("../models/Jewellery");
+const Jewellery =
+  require("../models/Jewellery");
 
-const router = express.Router();
+const router =
+  express.Router();
 
 const upload = multer({
-  dest: "uploads/",
+  dest: "temp/",
 });
 
 const supabase =
@@ -32,12 +37,34 @@ const supabase =
 
 router.post(
   "/",
-  upload.single("file"),
+
+  upload.fields([
+    {
+      name: "excel",
+      maxCount: 1,
+    },
+
+    {
+      name: "zip",
+      maxCount: 1,
+    },
+  ]),
+
   async (req, res) => {
     try {
+      const excelFile =
+        req.files[
+          "excel"
+        ][0];
+
+      const zipFile =
+        req.files[
+          "zip"
+        ][0];
+
       const workbook =
         XLSX.readFile(
-          req.file.path
+          excelFile.path
         );
 
       const sheetName =
@@ -50,19 +77,54 @@ router.post(
           ]
         );
 
+      /* ---------------- ZIP EXTRACTION ---------------- */
+
+      const zip =
+        new AdmZip(
+          zipFile.path
+        );
+
+      const extractPath =
+        path.join(
+          __dirname,
+          "../temp/images"
+        );
+
+      if (
+        !fs.existsSync(
+          extractPath
+        )
+      ) {
+        fs.mkdirSync(
+          extractPath,
+          {
+            recursive: true,
+          }
+        );
+      }
+
+      zip.extractAllTo(
+        extractPath,
+        true
+      );
+
       console.log(
         "HEADERS:",
         Object.keys(data[0])
       );
 
       for (const row of data) {
-        const cleanedRow = {};
+        const cleanedRow =
+          {};
 
-        Object.keys(row).forEach(
+        Object.keys(
+          row
+        ).forEach(
           (key) => {
             cleanedRow[
               key.trim()
-            ] = row[key];
+            ] =
+              row[key];
           }
         );
 
@@ -80,14 +142,16 @@ router.post(
         }
 
         const existing =
-          await Jewellery.findOne({
-            where: {
-              skuStNo:
-                cleanedRow[
-                  "SKU/St.No"
-                ],
-            },
-          });
+          await Jewellery.findOne(
+            {
+              where: {
+                skuStNo:
+                  cleanedRow[
+                    "SKU/St.No"
+                  ],
+              },
+            }
+          );
 
         if (existing)
           continue;
@@ -102,12 +166,10 @@ router.post(
             .trim();
 
         const imageFolder =
-          path.join(
-            __dirname,
-            "../jewellery-images"
-          );
+          extractPath;
 
-        let imageUrl = "";
+        let imageUrl =
+          "";
 
         const possibleExtensions =
           [
@@ -139,7 +201,9 @@ router.post(
           }
         }
 
-        if (foundImage) {
+        if (
+          foundImage
+        ) {
           const fileBuffer =
             fs.readFileSync(
               foundImage
@@ -167,7 +231,9 @@ router.post(
                 }
               );
 
-          if (!error) {
+          if (
+            !error
+          ) {
             const {
               data:
                 publicUrlData,
@@ -194,118 +260,129 @@ router.post(
           );
         }
 
-        await Jewellery.create({
-          srNo:
-            cleanedRow[
-              "SrNo"
-            ],
+        await Jewellery.create(
+          {
+            srNo:
+              cleanedRow[
+                "SrNo"
+              ],
 
-          dlcNo:
-            cleanedRow[
-              "DLC No."
-            ],
+            dlcNo:
+              cleanedRow[
+                "DLC No."
+              ],
 
-          clientName:
-            cleanedRow[
-              "Client Name"
-            ],
-            
-          skuStNo:
-            cleanedRow[
-              "SKU/St.No"
-            ],
+            clientName:
+              cleanedRow[
+                "Client Name"
+              ],
 
-          item:
-            cleanedRow[
-              "Item"
-            ],
+            skuStNo:
+              cleanedRow[
+                "SKU/St.No"
+              ],
 
-          metal:
-            cleanedRow[
-              "Metal"
-            ],
+            item:
+              cleanedRow[
+                "Item"
+              ],
 
-          hsn:
-            cleanedRow[
-              "HSN"
-            ],
+            metal:
+              cleanedRow[
+                "Metal"
+              ],
 
-          pcs:
-            cleanedRow[
-              "Pcs/Pair"
-            ],
+            hsn:
+              cleanedRow[
+                "HSN"
+              ],
 
-          description:
-            cleanedRow[
-              "Description"
-            ],
+            pcs:
+              cleanedRow[
+                "Pcs/Pair"
+              ],
 
-          grossWeight:
-            cleanedRow[
-              "G-Wt"
-            ],
+            description:
+              cleanedRow[
+                "Description"
+              ],
 
-          netWeight:
-            cleanedRow[
-              "N-Wt"
-            ],
+            grossWeight:
+              cleanedRow[
+                "G-Wt"
+              ],
 
-          metalValue:
-            cleanedRow[
-              "Mt Value"
-            ],
+            netWeight:
+              cleanedRow[
+                "N-Wt"
+              ],
 
-          diamondWeight:
-            cleanedRow[
-              "Diam Wt"
-            ],
+            metalValue:
+              cleanedRow[
+                "Mt Value"
+              ],
 
-          diamondValue:
-            cleanedRow[
-              "Diam Value"
-            ],
+            diamondWeight:
+              cleanedRow[
+                "Diam Wt"
+              ],
 
-          csWeight:
-            cleanedRow[
-              "CS Wt"
-            ],
+            diamondValue:
+              cleanedRow[
+                "Diam Value"
+              ],
 
-          csValue:
-            cleanedRow[
-              "CS Value"
-            ],
+            csWeight:
+              cleanedRow[
+                "CS Wt"
+              ],
 
-          otherWeight:
-            cleanedRow[
-              "Oth Wt"
-            ],
+            csValue:
+              cleanedRow[
+                "CS Value"
+              ],
 
-          otherValue:
-            cleanedRow[
-              "Oth Val"
-            ],
+            otherWeight:
+              cleanedRow[
+                "Oth Wt"
+              ],
 
-          labourValue:
-            cleanedRow[
-              "Labour & Value Addition"
-            ],
+            otherValue:
+              cleanedRow[
+                "Oth Val"
+              ],
 
-          amount:
-            cleanedRow[
-              "Amount"
-            ],
+            labourValue:
+              cleanedRow[
+                "Labour & Value Addition"
+              ],
 
-          image: imageUrl,
+            amount:
+              cleanedRow[
+                "Amount"
+              ],
 
-          status:
-            "IN_STOCK",
+            image:
+              imageUrl,
 
-          // AUTO TRACK OUT DATE
+            status:
+              "IN_STOCK",
 
-          outDate:
-            new Date(),
-        });
+            outDate:
+              new Date(),
+          }
+        );
       }
+
+      /* ---------------- CLEANUP ---------------- */
+
+      fs.rmSync(
+        extractPath,
+        {
+          recursive: true,
+          force: true,
+        }
+      );
 
       res.json({
         message:
@@ -316,15 +393,20 @@ router.post(
         "FULL IMPORT ERROR:"
       );
 
-      console.log(error);
+      console.log(
+        error
+      );
 
-      res.status(500).json({
-        error:
-          error.message ||
-          "Import Failed",
-      });
+      res.status(500).json(
+        {
+          error:
+            error.message ||
+            "Import Failed",
+        }
+      );
     }
   }
 );
 
-module.exports = router;
+module.exports =
+  router;
