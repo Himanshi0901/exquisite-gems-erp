@@ -545,20 +545,24 @@ function Inventory() {
             )}
           </select>
 
-          {/* EXPORT */}
+          {/* EXPORT + ITEMS */}
 
-          <button
-            onClick={exportToExcel}
-            className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all"
-          >
-            Export Excel
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={
+                exportToExcel
+              }
+              className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all whitespace-nowrap"
+            >
+              Export Excel
+            </button>
 
-          {/* COUNT */}
-
-          <div className="flex items-center justify-center min-w-[120px] bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-5 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
-            {filteredItems.length}{" "}
-            Items
+            <div className="flex items-center justify-center min-w-[120px] bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-5 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
+              {
+                filteredItems.length
+              }{" "}
+              Items
+            </div>
           </div>
         </div>
       </div>
