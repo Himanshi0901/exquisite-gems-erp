@@ -378,7 +378,7 @@ function Inventory() {
       {/* FILTER BAR */}
 
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2 md:gap-3 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_auto] gap-2 md:gap-3 items-center">
           {/* SEARCH */}
 
           <input
@@ -547,7 +547,7 @@ function Inventory() {
 
           {/* EXPORT + ITEMS */}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <button
               onClick={
                 exportToExcel
@@ -557,7 +557,7 @@ function Inventory() {
               Export Excel
             </button>
 
-            <div className="flex items-center justify-center min-w-[120px] bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-5 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
+            <div className="flex items-center justify-center bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-4 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
               {
                 filteredItems.length
               }{" "}
