@@ -5,13 +5,20 @@ import "./index.css";
 import { Toaster } from "react-hot-toast";
 
 import {
+  AuthProvider,
+} from "./context/AuthContext";
+
+import {
   InventoryProvider,
 } from "./context/InventoryContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <InventoryProvider>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+      
       <Toaster
         position="top-right"
         toastOptions={{

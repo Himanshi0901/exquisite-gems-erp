@@ -2,7 +2,12 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate,
 } from "react-router-dom";
+
+import {
+  useContext,
+} from "react";
 
 import { Toaster } from "react-hot-toast";
 
@@ -14,7 +19,18 @@ import AddItem from "./pages/AddItem";
 
 import ImportData from "./pages/ImportData";
 
+import Login from "./pages/Login";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import { AuthContext } from "./context/AuthContext";
+
 function App() {
+  const { user } =
+    useContext(
+      AuthContext
+    );
+
   return (
     <>
       <Toaster
@@ -26,7 +42,8 @@ function App() {
             background:
               "#ffffff",
 
-            color: "#1f2933",
+            color:
+              "#1f2933",
 
             border:
               "1px solid #dfe5ea",
@@ -68,24 +85,60 @@ function App() {
 
       <BrowserRouter>
         <Routes>
+          {/* LOGIN */}
+
+          <Route
+            path="/login"
+            element={
+              user ? (
+                <Navigate
+                  to="/"
+                />
+              ) : (
+                <Login />
+              )
+            }
+          />
+
+          {/* PROTECTED ROUTES */}
+
           <Route
             path="/"
             element={
-              <Dashboard />
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
             }
           />
 
           <Route
             path="/inventory"
             element={
-              <Inventory />
+              <ProtectedRoute>
+                <Inventory />
+              </ProtectedRoute>
             }
           />
 
           <Route
             path="/add-item"
             element={
-              <AddItem />
+              <ProtectedRoute>
+                <AddItem />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={
+                  user
+                    ? "/"
+                    : "/login"
+                }
+              />
             }
           />
         </Routes>

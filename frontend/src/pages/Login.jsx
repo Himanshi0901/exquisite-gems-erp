@@ -1,28 +1,128 @@
+import {
+  useContext,
+  useState,
+} from "react";
+
+import axios from "axios";
+
+import {
+  useNavigate,
+} from "react-router-dom";
+
+import { AuthContext } from "../context/AuthContext";
+
 function Login() {
+  const navigate =
+    useNavigate();
+
+  const { login } =
+    useContext(
+      AuthContext
+    );
+
+  const [email, setEmail] =
+    useState("");
+
+  const [
+    password,
+    setPassword,
+  ] = useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const handleLogin =
+    async (e) => {
+      e.preventDefault();
+
+      try {
+        setLoading(true);
+
+        const response =
+          await axios.post(
+            "https://exquisite-gems-erp.onrender.com/api/auth/login",
+            {
+              email,
+              password,
+            }
+          );
+
+        login(
+          response.data
+            .token,
+
+          response.data
+            .user
+        );
+
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+
+        alert(
+          error?.response
+            ?.data?.error ||
+            "Login failed"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="bg-[#1a1a1a] p-10 rounded-2xl border border-yellow-700 w-[400px]">
-        <h1 className="text-3xl font-bold text-center text-yellow-500 mb-8">
-          Jewellery ERP
+    <div className="min-h-screen bg-[#f5f7fa] flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-md rounded-[32px] border border-[#dfe5ea] p-8 shadow-sm">
+        <h1 className="text-4xl font-black text-[#1f2933]">
+          ERP Login
         </h1>
 
-        <div className="space-y-4">
+        <p className="text-[#7b8794] mt-2">
+          Login to access
+          inventory system
+        </p>
+
+        <form
+          onSubmit={
+            handleLogin
+          }
+          className="mt-8 space-y-5"
+        >
           <input
             type="email"
             placeholder="Email"
-            className="w-full bg-black p-4 rounded-lg border border-gray-700 outline-none"
+            value={email}
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
+            className="w-full bg-[#f8fafb] border border-[#dfe5ea] rounded-[18px] px-5 py-4 outline-none"
           />
 
           <input
             type="password"
             placeholder="Password"
-            className="w-full bg-black p-4 rounded-lg border border-gray-700 outline-none"
+            value={password}
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
+            className="w-full bg-[#f8fafb] border border-[#dfe5ea] rounded-[18px] px-5 py-4 outline-none"
           />
 
-          <button className="w-full bg-yellow-500 text-black py-3 rounded-lg font-bold">
-            Login
+          <button
+            type="submit"
+            disabled={
+              loading
+            }
+            className="w-full bg-[#31475a] hover:bg-[#3d556b] text-white py-4 rounded-[18px] font-bold transition-all"
+          >
+            {loading
+              ? "Logging in..."
+              : "Login"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
