@@ -1,3 +1,4 @@
+```js
 require("dotenv").config();
 
 const express = require("express");
@@ -100,11 +101,26 @@ router.post(
         }
       }
 
+      const sentDate =
+        new Date();
+
+      const expiryDate =
+        new Date();
+
+      expiryDate.setMonth(
+        expiryDate.getMonth() +
+          6
+      );
+
       const item =
         await Jewellery.create({
           ...req.body,
 
           image: imageUrl,
+
+          sentDate,
+
+          expiryDate,
         });
 
       res.json(item);
@@ -163,9 +179,6 @@ router.patch(
         {
           status:
             "IN_DUBAI",
-
-          dubaiSentAt:
-            today,
 
           sentDate:
             today,
@@ -260,3 +273,4 @@ router.patch(
 );
 
 module.exports = router;
+```
