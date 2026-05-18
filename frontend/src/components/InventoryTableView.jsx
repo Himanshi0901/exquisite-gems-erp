@@ -10,6 +10,26 @@ function InventoryTableView({
     setSelectedItem,
   ] = useState(null);
 
+  const formatWeight = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toFixed(3);
+
+  const formatPrice = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
+
   const getRemainingDays = (
     expiryDate
   ) => {
@@ -187,72 +207,71 @@ function InventoryTableView({
                   {/* GROSS */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
-                    {
+                    {formatWeight(
                       item.grossWeight
-                    }
+                    )}
                     g
                   </td>
 
                   {/* NET */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
-                    {
+                    {formatWeight(
                       item.netWeight
-                    }
+                    )}
                     g
                   </td>
 
                   {/* DIAMOND WT */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
-                    {item.diamondWeight ||
-                      0}
+                    {formatWeight(
+                      item.diamondWeight
+                    )}
                   </td>
 
                   {/* DIAMOND VALUE */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
-                    {Number(
-                      item.diamondValue ||
-                        0
-                    ).toLocaleString()}
+                    {formatPrice(
+                      item.diamondValue
+                    )}
                   </td>
 
                   {/* CS WT */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
-                    {item.csWeight ||
-                      0}
+                    {formatWeight(
+                      item.csWeight
+                    )}
                   </td>
 
                   {/* CS VALUE */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
-                    {Number(
-                      item.csValue ||
-                        0
-                    ).toLocaleString()}
+                    {formatPrice(
+                      item.csValue
+                    )}
                   </td>
 
                   {/* LABOUR */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
-                    {Number(
-                      item.labourValue ||
-                        0
-                    ).toLocaleString()}
+                    {formatPrice(
+                      item.labourValue
+                    )}
                   </td>
 
                   {/* TOTAL */}
 
                   <td className="p-4 font-black text-[#1f2933] whitespace-nowrap">
                     $
-                    {Number(
-                      item.amount || 0
-                    ).toLocaleString()}
+                    {formatPrice(
+                      item.amount
+                    )}
                   </td>
 
                   {/* EXPIRY DATE */}

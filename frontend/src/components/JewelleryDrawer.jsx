@@ -19,6 +19,26 @@ function JewelleryDrawer({
     setConfirmText,
   ] = useState("");
 
+  const formatWeight = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toFixed(3);
+
+  const formatPrice = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
+
   if (!item) return null;
 
   return (
@@ -139,13 +159,17 @@ function JewelleryDrawer({
                   {
                     label:
                       "Gross",
-                    value: `${item.grossWeight}g`,
+                    value: `${formatWeight(
+                      item.grossWeight
+                    )}g`,
                   },
 
                   {
                     label:
                       "Net",
-                    value: `${item.netWeight}g`,
+                    value: `${formatWeight(
+                      item.netWeight
+                    )}g`,
                   },
 
                   {
@@ -159,55 +183,57 @@ function JewelleryDrawer({
                   {
                     label:
                       "Diamond",
-                    value: `${item.diamondWeight || 0}ct`,
+                    value: `${formatWeight(
+                      item.diamondWeight
+                    )}ct`,
                   },
 
                   {
                     label:
                       "D Value",
-                    value: `$${Number(
-                      item.diamondValue ||
-                        0
-                    ).toLocaleString()}`,
+                    value: `$${formatPrice(
+                      item.diamondValue
+                    )}`,
                   },
 
                   {
                     label:
                       "CS Wt",
-                    value: `${item.csWeight || 0}g`,
+                    value: `${formatWeight(
+                      item.csWeight
+                    )}g`,
                   },
 
                   {
                     label:
                       "CS Val",
-                    value: `$${Number(
-                      item.csValue ||
-                        0
-                    ).toLocaleString()}`,
+                    value: `$${formatPrice(
+                      item.csValue
+                    )}`,
                   },
 
                   {
                     label:
                       "Other Wt",
-                    value: `${item.otherWeight || 0}g`,
+                    value: `${formatWeight(
+                      item.otherWeight
+                    )}g`,
                   },
 
                   {
                     label:
                       "Other Val",
-                    value: `$${Number(
-                      item.otherValue ||
-                        0
-                    ).toLocaleString()}`,
+                    value: `$${formatPrice(
+                      item.otherValue
+                    )}`,
                   },
 
                   {
                     label:
                       "Labour",
-                    value: `$${Number(
-                      item.labourValue ||
-                        0
-                    ).toLocaleString()}`,
+                    value: `$${formatPrice(
+                      item.labourValue
+                    )}`,
                   },
 
                   {
@@ -310,10 +336,9 @@ function JewelleryDrawer({
 
                   <h2 className="mt-1 text-[18px] md:text-[22px] leading-none font-black text-[#1f2933] break-words">
                     $
-                    {Number(
-                      item.amount ||
-                        0
-                    ).toLocaleString()}
+                    {formatPrice(
+                      item.amount
+                    )}
                   </h2>
                 </div>
               </div>

@@ -10,6 +10,26 @@ function InventoryTable({
     setSelectedItem,
   ] = useState(null);
 
+  const formatWeight = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toFixed(3);
+
+  const formatPrice = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
+
   const getRemainingDays = (
     expiryDate
   ) => {
@@ -152,9 +172,9 @@ function InventoryTable({
                   </span>
 
                   <span>
-                    {
+                    {formatWeight(
                       item.netWeight
-                    }
+                    )}
                     g
                   </span>
 
@@ -164,10 +184,9 @@ function InventoryTable({
 
                   <span className="font-bold text-[#1f2933]">
                     $
-                    {Number(
-                      item.amount ||
-                        0
-                    ).toLocaleString()}
+                    {formatPrice(
+                      item.amount
+                    )}
                   </span>
                 </div>
 

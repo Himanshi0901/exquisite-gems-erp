@@ -46,6 +46,26 @@ function Inventory() {
   const [sortBy, setSortBy] =
     useState("latest");
 
+  const formatWeight = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toFixed(3);
+
+  const formatPrice = (
+    value
+  ) =>
+    Number(
+      value || 0
+    ).toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
+
   /* ALERTS */
 
   useEffect(() => {
@@ -277,28 +297,44 @@ function Inventory() {
               item.pcs,
 
             "Gross Weight":
-              item.grossWeight,
+              formatWeight(
+                item.grossWeight
+              ),
 
             "Net Weight":
-              item.netWeight,
+              formatWeight(
+                item.netWeight
+              ),
 
             "Diamond Weight":
-              item.diamondWeight,
+              formatWeight(
+                item.diamondWeight
+              ),
 
             "Diamond Value":
-              item.diamondValue,
+              formatPrice(
+                item.diamondValue
+              ),
 
             "CS Weight":
-              item.csWeight,
+              formatWeight(
+                item.csWeight
+              ),
 
             "CS Value":
-              item.csValue,
+              formatPrice(
+                item.csValue
+              ),
 
             Labour:
-              item.labourValue,
+              formatPrice(
+                item.labourValue
+              ),
 
             Amount:
-              item.amount,
+              formatPrice(
+                item.amount
+              ),
 
             Status:
               item.status,
@@ -378,7 +414,7 @@ function Inventory() {
       {/* FILTER BAR */}
 
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2.2fr_1fr_1fr_1fr_1fr_1fr_auto_auto] gap-2 md:gap-3 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2.2fr_1fr_1fr_1fr_1fr_1fr_auto] gap-2 md:gap-3 items-center">
           {/* SEARCH */}
 
           <input
@@ -547,7 +583,7 @@ function Inventory() {
 
           {/* EXPORT + ITEMS */}
 
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-2 flex-nowrap">
             <button
               onClick={
                 exportToExcel
