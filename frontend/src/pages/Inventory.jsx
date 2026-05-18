@@ -326,7 +326,7 @@ function Inventory() {
                 ${
                   viewMode ===
                   "table"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#31475a] text-white"
 
                     : "text-[#52606d]"
                 }
