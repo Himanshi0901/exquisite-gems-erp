@@ -356,7 +356,14 @@ function Inventory() {
                   ).toLocaleDateString()
                 : "-",
 
-            Image:
+            "Sold Date":
+              item.soldDate
+                ? new Date(
+                    item.soldDate
+                  ).toLocaleDateString()
+                : "-",
+
+            "Image Link":
               item.image || "",
           })
         );
@@ -365,6 +372,51 @@ function Inventory() {
         XLSX.utils.json_to_sheet(
           exportData
         );
+
+      /* CLICKABLE IMAGE LINKS */
+
+      filteredItems.forEach(
+        (item, index) => {
+          if (item.image) {
+            const cellAddress =
+              `T${index + 2}`;
+
+            worksheet[
+              cellAddress
+            ] = {
+              t: "s",
+
+              v: "Open Image",
+
+              l: {
+                Target:
+                  item.image,
+              },
+            };
+          }
+        }
+      );
+
+      worksheet["!cols"] = [
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 24 },
+        { wch: 18 },
+        { wch: 14 },
+        { wch: 10 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 14 },
+        { wch: 14 },
+        { wch: 14 },
+        { wch: 20 },
+      ];
 
       const workbook =
         XLSX.utils.book_new();
@@ -381,6 +433,7 @@ function Inventory() {
           {
             bookType:
               "xlsx",
+
             type: "array",
           }
         );
@@ -411,12 +464,8 @@ function Inventory() {
 
   return (
     <MainLayout>
-      {/* FILTER BAR */}
-
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2.2fr_1fr_1fr_1fr_1fr_1fr_auto_auto] gap-2 md:gap-3 items-center">
-          {/* SEARCH */}
-
           <input
             type="text"
             placeholder="Search SKU, client, DLC..."
@@ -428,8 +477,6 @@ function Inventory() {
             }
             className="col-span-2 bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-4 py-2.5 outline-none text-sm"
           />
-
-          {/* VIEW TOGGLE */}
 
           <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] p-1 w-full">
             <button
@@ -471,8 +518,6 @@ function Inventory() {
             </button>
           </div>
 
-          {/* STATUS */}
-
           <select
             value={statusFilter}
             onChange={(e) =>
@@ -494,8 +539,6 @@ function Inventory() {
               Sold
             </option>
           </select>
-
-          {/* CATEGORY */}
 
           <select
             value={itemFilter}
@@ -527,8 +570,6 @@ function Inventory() {
             </option>
           </select>
 
-          {/* CLIENT FILTER */}
-
           <select
             value={clientFilter}
             onChange={(e) =>
@@ -553,8 +594,6 @@ function Inventory() {
               )
             )}
           </select>
-
-          {/* DLC FILTER */}
 
           <select
             value={dlcFilter}
@@ -581,8 +620,6 @@ function Inventory() {
             )}
           </select>
 
-          {/* EXPORT + ITEMS */}
-
           <div className="flex items-center justify-end gap-2 flex-nowrap">
             <button
               onClick={
@@ -602,8 +639,6 @@ function Inventory() {
           </div>
         </div>
       </div>
-
-      {/* VIEW */}
 
       {viewMode ===
       "grid" ? (
