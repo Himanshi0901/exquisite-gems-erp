@@ -276,8 +276,8 @@ function Inventory() {
     <MainLayout>
       {/* FILTER BAR */}
 
-      <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-8 gap-3 items-center">
+      <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+        <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-8 gap-2 md:gap-3 items-center">
           {/* SEARCH */}
 
           <input
@@ -289,19 +289,19 @@ function Inventory() {
                 e.target.value
               )
             }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
+            className="col-span-2 bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-4 py-2.5 outline-none text-sm"
           />
 
           {/* VIEW TOGGLE */}
 
-          <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] p-1 w-fit">
+          <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] p-1 w-full">
             <button
               onClick={() =>
                 setViewMode(
                   "grid"
                 )
               }
-              className={`px-4 py-2 rounded-[12px] text-sm font-semibold transition
+              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
                 
                 ${
                   viewMode ===
@@ -321,7 +321,7 @@ function Inventory() {
                   "table"
                 )
               }
-              className={`px-4 py-2 rounded-[12px] text-sm font-semibold transition
+              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
                 
                 ${
                   viewMode ===
@@ -345,7 +345,7 @@ function Inventory() {
                 e.target.value
               )
             }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
           >
             <option value="ALL">
               All Status
@@ -369,7 +369,7 @@ function Inventory() {
                 e.target.value
               )
             }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
           >
             <option value="ALL">
               All Jewellery
@@ -401,7 +401,7 @@ function Inventory() {
                 e.target.value
               )
             }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
           >
             <option value="ALL">
               All Clients
@@ -428,7 +428,7 @@ function Inventory() {
                 e.target.value
               )
             }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[16px] px-4 py-3 outline-none text-sm"
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
           >
             <option value="ALL">
               All DLC
@@ -450,14 +450,14 @@ function Inventory() {
 
           <button
             onClick={exportToExcel}
-            className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-3 rounded-[16px] text-sm font-semibold transition-all"
+            className="col-span-2 md:col-span-1 bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all"
           >
             Export Excel
           </button>
 
           {/* COUNT */}
 
-          <div className="flex items-center justify-center bg-[#f8fafb] rounded-[16px] border border-[#dfe5ea] px-5 py-3 text-sm font-semibold text-[#334e68] whitespace-nowrap">
+          <div className="flex items-center justify-center bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-5 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
             {filteredItems.length}{" "}
             Items
           </div>
