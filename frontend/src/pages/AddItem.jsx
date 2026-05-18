@@ -7,17 +7,27 @@ import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
 
 function AddItem() {
-  const [loading, setLoading] =
-    useState(false);
+  const [
+    loading,
+    setLoading,
+  ] = useState(false);
 
-  const [file, setFile] =
+  const [
+    excelFile,
+    setExcelFile,
+  ] = useState(null);
+
+  const [zipFile, setZipFile] =
     useState(null);
 
   const handleImport =
     async () => {
-      if (!file) {
+      if (
+        !excelFile ||
+        !zipFile
+      ) {
         alert(
-          "Please select a file"
+          "Please select Excel and ZIP files"
         );
 
         return;
@@ -30,25 +40,44 @@ function AddItem() {
           new FormData();
 
         formData.append(
-          "file",
-          file
+          "excel",
+          excelFile
+        );
+
+        formData.append(
+          "zip",
+          zipFile
         );
 
         await axios.post(
           "https://exquisite-gems-erp.onrender.com/api/import",
-          formData
+          formData,
+          {
+            headers: {
+              "Content-Type":
+                "multipart/form-data",
+            },
+          }
         );
 
         alert(
           "Inventory imported successfully"
         );
 
-        setFile(null);
+        setExcelFile(
+          null
+        );
+
+        setZipFile(
+          null
+        );
       } catch (error) {
         console.log(error);
 
         alert(
-          "Import failed"
+          error?.response
+            ?.data?.error ||
+            "Import failed"
         );
       } finally {
         setLoading(false);
@@ -61,14 +90,11 @@ function AddItem() {
         {/* HEADER */}
 
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-[#1f2933]">
-          </h1>
-
           <p className="text-[#6b7280] mt-2">
             Upload inventory
-            Excel or CSV files
-            to import jewellery
-            items automatically
+            Excel file along
+            with ZIP file
+            containing images.
           </p>
         </div>
 
@@ -77,8 +103,10 @@ function AddItem() {
         <div className="bg-white border border-[#dfe5ea] rounded-[32px] p-6 md:p-8 shadow-sm">
           <div className="border-2 border-dashed border-[#cbd5df] rounded-[28px] p-8 md:p-14 text-center bg-[#f8fafb]">
             <div className="max-w-xl mx-auto">
+              {/* EXCEL */}
+
               <h2 className="text-2xl font-black text-[#31475a]">
-                Upload Inventory Sheet
+                Upload Excel File
               </h2>
 
               <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
@@ -90,7 +118,7 @@ function AddItem() {
                 type="file"
                 accept=".xlsx,.csv"
                 onChange={(e) =>
-                  setFile(
+                  setExcelFile(
                     e.target
                       .files[0]
                   )
@@ -98,15 +126,56 @@ function AddItem() {
                 className="mt-8 w-full bg-white border border-[#dfe5ea] p-5 rounded-[18px] text-[#52606d]"
               />
 
-              {file && (
-                <div className="mt-6 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
+              {excelFile && (
+                <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
                   <p className="text-[#31475a] font-bold truncate">
                     {
-                      file.name
+                      excelFile.name
                     }
                   </p>
                 </div>
               )}
+
+              {/* ZIP */}
+
+              <div className="mt-10">
+                <h2 className="text-2xl font-black text-[#31475a]">
+                  Upload Images ZIP
+                </h2>
+
+                <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
+                  ZIP should
+                  contain images
+                  named exactly as
+                  SKU numbers.
+                </p>
+
+                <input
+                  type="file"
+                  accept=".zip,application/zip"
+                  onChange={(
+                    e
+                  ) =>
+                    setZipFile(
+                      e.target
+                        .files[0]
+                    )
+                  }
+                  className="mt-8 w-full bg-white border border-[#dfe5ea] p-5 rounded-[18px] text-[#52606d]"
+                />
+
+                {zipFile && (
+                  <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
+                    <p className="text-[#31475a] font-bold truncate">
+                      {
+                        zipFile.name
+                      }
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* BUTTON */}
 
               <button
                 onClick={
@@ -115,12 +184,46 @@ function AddItem() {
                 disabled={
                   loading
                 }
-                className="mt-8 w-full md:w-auto bg-[#31475a] hover:bg-[#3d556b] text-white px-10 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
+                className="mt-10 w-full md:w-auto bg-[#31475a] hover:bg-[#3d556b] text-white px-10 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
               >
                 {loading
                   ? "Importing Inventory..."
                   : "Import Inventory"}
               </button>
+
+              {/* NOTES */}
+
+              <div className="mt-10 bg-white border border-[#dfe5ea] rounded-[20px] p-5 text-left">
+                <h3 className="font-bold text-[#31475a] mb-3">
+                  Important Notes
+                </h3>
+
+                <ul className="text-sm text-[#52606d] space-y-2 list-disc pl-5">
+                  <li>
+                    Image names
+                    must exactly
+                    match SKU
+                    numbers
+                  </li>
+
+                  <li>
+                    Example:
+                    SKU123.jpg
+                  </li>
+
+                  <li>
+                    Upload all
+                    images inside
+                    ONE ZIP file
+                  </li>
+
+                  <li>
+                    Supported image
+                    formats: JPG,
+                    PNG, WEBP
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
