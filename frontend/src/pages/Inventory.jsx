@@ -414,7 +414,7 @@ function Inventory() {
       {/* FILTER BAR */}
 
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2.2fr_1fr_1fr_1fr_1fr_1fr_auto] gap-2 md:gap-3 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2.2fr_1fr_1fr_1fr_1fr_1fr_auto_auto] gap-2 md:gap-3 items-center">
           {/* SEARCH */}
 
           <input
