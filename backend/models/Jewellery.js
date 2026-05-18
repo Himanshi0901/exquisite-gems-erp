@@ -11,7 +11,7 @@ const Jewellery =
       srNo: {
         type: DataTypes.STRING,
       },
-      
+
       dlcNo: {
         type: DataTypes.STRING,
       },
@@ -22,6 +22,7 @@ const Jewellery =
 
       skuStNo: {
         type: DataTypes.STRING,
+
         unique: true,
       },
 
@@ -95,19 +96,22 @@ const Jewellery =
 
       status: {
         type: DataTypes.STRING,
+
         defaultValue:
           "IN_STOCK",
       },
 
-      // OUTWARD DATE
+      // SENT DATE
 
-      outDate: {
+      sentDate: {
         type: DataTypes.DATE,
+
         defaultValue:
           DataTypes.NOW,
       },
 
-      // OPTIONAL FUTURE TRACKING
+      // AUTO EXPIRY DATE
+      // 6 months after sent date
 
       expiryDate: {
         type: DataTypes.DATE,

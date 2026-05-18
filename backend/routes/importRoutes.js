@@ -368,8 +368,21 @@ router.post(
             status:
               "IN_STOCK",
 
-            outDate:
+            sentDate:
               new Date(),
+
+            expiryDate:
+              (() => {
+                const date =
+                  new Date();
+
+                date.setMonth(
+                  date.getMonth() +
+                    6
+                );
+
+                return date;
+              })(),
           }
         );
       }
