@@ -4,9 +4,16 @@ import {
 
 import axios from "axios";
 
+import {
+  useNavigate,
+} from "react-router-dom";
+
 import MainLayout from "../layouts/MainLayout";
 
 function AddItem() {
+  const navigate =
+    useNavigate();
+
   const [
     loading,
     setLoading,
@@ -71,6 +78,12 @@ function AddItem() {
         setZipFile(
           null
         );
+
+        navigate(
+          "/inventory"
+        );
+
+        window.location.reload();
       } catch (error) {
         console.log(error);
 
