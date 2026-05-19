@@ -43,6 +43,7 @@ function Inventory() {
   const [dlcFilter, setDlcFilter] =
     useState("ALL");
 
+    
   const [sortBy, setSortBy] =
     useState("latest");
 
