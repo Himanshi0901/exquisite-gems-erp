@@ -85,10 +85,6 @@ function InventoryTableView({
 
   const headers = [
     ["Sr No", ""],
-    ["Client", ""],
-    ["DLC No.", ""],
-
-    ["DLC Date", ""],
     ["SKU/St.No", ""],
     ["Item", ""],
     ["Metal", ""],
@@ -116,6 +112,10 @@ function InventoryTableView({
     ],
 
     ["Amount", "US$"],
+    ["Client", ""],
+    ["DLC No.", ""],
+
+    ["DLC Date", ""],
 
     ["Expiry Date", ""],
     ["Sold Date", ""],
@@ -311,26 +311,6 @@ function InventoryTableView({
                       "-"}
                   </td>
 
-                  <td className="p-4 text-[#52606d] min-w-[220px]">
-                    <div className="break-words whitespace-normal leading-relaxed">
-                      {item.clientName ||
-                        "-"}
-                    </div>
-                  </td>
-
-                  <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
-                    {item.dlcNo ||
-                      "-"}
-                  </td>
-
-                  <td className="p-4 text-[#52606d] whitespace-nowrap">
-                    {item.dlcDate
-                      ? new Date(
-                          item.dlcDate
-                        ).toLocaleDateString()
-                      : "-"}
-                  </td>
-
                   <td className="p-4 font-black text-[#31475a] whitespace-nowrap">
                     {
                       item.skuStNo
@@ -433,6 +413,26 @@ function InventoryTableView({
                     {formatPrice(
                       item.amount
                     )}
+                  </td>
+
+                  <td className="p-4 text-[#52606d] min-w-[220px]">
+                    <div className="break-words whitespace-normal leading-relaxed">
+                      {item.clientName ||
+                        "-"}
+                    </div>
+                  </td>
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
+                    {item.dlcNo ||
+                      "-"}
+                  </td>
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {item.dlcDate
+                      ? new Date(
+                          item.dlcDate
+                        ).toLocaleDateString()
+                      : "-"}
                   </td>
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
