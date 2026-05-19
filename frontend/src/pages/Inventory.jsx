@@ -276,13 +276,8 @@ function Inventory() {
   const exportToExcel =
     () => {
       const exportData =
-        filteredItems
-          .filter(
-            (item) =>
-              item.status !==
-              "SOLD"
-          )
-          .map((item) => {
+        filteredItems.map(
+          (item) => {
             const today =
               new Date();
 
@@ -421,7 +416,8 @@ function Inventory() {
                 item.image ||
                 "",
             };
-          });
+          }
+        );
 
       const worksheet =
         XLSX.utils.json_to_sheet(
@@ -430,46 +426,42 @@ function Inventory() {
 
       /* CLICKABLE IMAGE LINKS */
 
-      filteredItems
-        .filter(
-          (item) =>
-            item.status !==
-            "SOLD"
-        )
-        .forEach(
-          (
-            item,
-            index
-          ) => {
-            if (
-              item.image
-            ) {
-              const cellAddress =
-                `Z${
-                  index + 2
-                }`;
+      filteredItems.forEach(
+        (
+          item,
+          index
+        ) => {
+          if (
+            item.image
+          ) {
+            const cellAddress =
+              `Z${
+                index + 2
+              }`;
 
-              worksheet[
-                cellAddress
-              ] = {
-                t: "s",
+            worksheet[
+              cellAddress
+            ] = {
+              t: "s",
 
-                v: "Open Image",
+              v: "Open Image",
 
-                l: {
-                  Target:
-                    item.image,
-                },
-              };
-            }
+              l: {
+                Target:
+                  item.image,
+              },
+            };
           }
-        );
+        }
+      );
 
       worksheet["!cols"] = [
         { wch: 10 },
         { wch: 18 },
         { wch: 18 },
-        { wch: 12 },
+        { wch: 14 },
+        { wch: 18 },
+        { wch: 18 },
         { wch: 12 },
         { wch: 12 },
         { wch: 30 },
@@ -490,9 +482,6 @@ function Inventory() {
 
         { wch: 24 },
 
-        { wch: 18 },
-
-        { wch: 24 },
         { wch: 18 },
 
         { wch: 16 },
@@ -573,7 +562,6 @@ function Inventory() {
                 )
               }
               className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
-                
                 ${
                   viewMode ===
                   "grid"
@@ -592,7 +580,6 @@ function Inventory() {
                 )
               }
               className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
-                
                 ${
                   viewMode ===
                   "table"
