@@ -387,6 +387,15 @@ function AddItem() {
                 Download Sample
                 Format
               </a>
+              <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+                <p className="text-sm font-semibold text-amber-700 leading-relaxed">
+                  Important:
+                  <span className="font-black">
+                    {" "}
+                    Image column in Excel must remain blank.
+                  </span>
+                </p>
+              </div>
             </div>
 
             {/* IMAGES */}
@@ -504,7 +513,7 @@ function AddItem() {
 
                 <li>
                   Example:
-                  SKU123.jpg
+                  SKU-123.jpg
                 </li>
 
                 <li>
