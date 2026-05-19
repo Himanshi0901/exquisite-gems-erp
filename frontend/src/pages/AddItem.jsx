@@ -241,7 +241,7 @@ function AddItem() {
 
   return (
     <MainLayout>
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* HEADER */}
 
         <div className="mb-8">
@@ -393,165 +393,170 @@ function AddItem() {
               </div>
             </div>
 
-            {/* EXCEL */}
+            {/* UPLOADS */}
 
-            <div className="mt-10">
-              <h2 className="text-2xl font-black text-[#31475a]">
-                Upload Excel File
-              </h2>
+            <div className="mt-10 grid lg:grid-cols-2 gap-8">
+              {/* EXCEL */}
 
-              <div
-                onDragOver={(
-                  e
-                ) =>
-                  e.preventDefault()
-                }
-                onDrop={
-                  handleExcelDrop
-                }
-                className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
-              >
-                <p className="text-[#52606d] font-semibold">
-                  Drag & Drop
-                  Excel Here
-                </p>
+              <div>
+                <h2 className="text-2xl font-black text-[#31475a]">
+                  Upload Excel
+                  File
+                </h2>
 
-                <p className="text-sm text-[#7b8794] mt-2">
-                  XLSX & CSV
-                  supported
-                </p>
-
-                <input
-                  type="file"
-                  accept=".xlsx,.csv"
-                  onChange={(
+                <div
+                  onDragOver={(
                     e
                   ) =>
-                    setExcelFile(
-                      e.target
-                        .files[0]
-                    )
+                    e.preventDefault()
                   }
-                  className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px]"
-                />
-              </div>
-
-              {excelFile && (
-                <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
-                  <p className="font-bold text-[#31475a] truncate">
-                    {
-                      excelFile.name
-                    }
-                  </p>
-                </div>
-              )}
-
-              {/* DOWNLOAD FORMAT */}
-
-              <a
-                href="/sample_inventory_format.xlsx"
-                download
-                className="inline-block mt-5 bg-[#eef2f6] hover:bg-[#e3e8ee] text-[#31475a] px-6 py-3 rounded-2xl font-bold transition"
-              >
-                Download Sample
-                Format
-              </a>
-
-              {/* NOTE */}
-
-              <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
-                <p className="text-sm font-semibold text-amber-700 leading-relaxed">
-                  Important:
-                  <span className="font-black">
-                    {" "}
-                    Image column in
-                    Excel must
-                    remain blank.
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            {/* IMAGES */}
-
-            <div className="mt-12">
-              <h2 className="text-2xl font-black text-[#31475a]">
-                Upload Images
-              </h2>
-
-              <div
-                onDragOver={(
-                  e
-                ) =>
-                  e.preventDefault()
-                }
-                onDrop={
-                  handleImageDrop
-                }
-                className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
-              >
-                <p className="text-[#52606d] font-semibold">
-                  Drag & Drop
-                  Images Here
-                </p>
-
-                <p className="text-sm text-[#7b8794] mt-2">
-                  JPG, JPEG &
-                  PNG supported
-                </p>
-
-                <input
-                  type="file"
-                  multiple
-                  accept=".jpg,.jpeg,.png"
-                  onChange={(
-                    e
-                  ) =>
-                    handleImageSelect(
-                      e.target
-                        .files
-                    )
+                  onDrop={
+                    handleExcelDrop
                   }
-                  className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px]"
-                />
-              </div>
-
-              {/* IMAGE LIST */}
-
-              {imageFiles.length >
-                0 && (
-                <div className="mt-5 bg-white border border-[#dfe5ea] rounded-[18px] p-4 text-left max-h-[220px] overflow-y-auto">
-                  <p className="font-black text-[#31475a] mb-3">
-                    Selected
-                    Images (
-                    {
-                      imageFiles.length
-                    }
-                    )
+                  className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center h-[260px] flex flex-col justify-center"
+                >
+                  <p className="text-[#52606d] font-semibold">
+                    Drag & Drop
+                    Excel Here
                   </p>
 
-                  <div className="space-y-2">
-                    {imageFiles.map(
-                      (
-                        file,
-                        index
-                      ) => (
-                        <div
-                          key={
-                            index
-                          }
-                          className="text-sm text-[#52606d] truncate"
-                        >
-                          •{" "}
-                          {
-                            file.name
-                          }
-                        </div>
+                  <p className="text-sm text-[#7b8794] mt-2">
+                    XLSX & CSV
+                    supported
+                  </p>
+
+                  <input
+                    type="file"
+                    accept=".xlsx,.csv"
+                    onChange={(
+                      e
+                    ) =>
+                      setExcelFile(
+                        e.target
+                          .files[0]
                       )
-                    )}
-                  </div>
+                    }
+                    className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px]"
+                  />
                 </div>
-              )}
+
+                {excelFile && (
+                  <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
+                    <p className="font-bold text-[#31475a] truncate">
+                      {
+                        excelFile.name
+                      }
+                    </p>
+                  </div>
+                )}
+
+                {/* DOWNLOAD */}
+
+                <a
+                  href="/sample_inventory_format.xlsx"
+                  download
+                  className="inline-block mt-5 bg-[#eef2f6] hover:bg-[#e3e8ee] text-[#31475a] px-6 py-3 rounded-2xl font-bold transition"
+                >
+                  Download
+                  Sample Format
+                </a>
+
+                {/* NOTE */}
+
+                <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+                  <p className="text-sm font-semibold text-amber-700 leading-relaxed">
+                    Important:
+                    <span className="font-black">
+                      {" "}
+                      Image column
+                      in Excel must
+                      remain blank.
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              {/* IMAGES */}
+
+              <div>
+                <h2 className="text-2xl font-black text-[#31475a]">
+                  Upload Images
+                </h2>
+
+                <div
+                  onDragOver={(
+                    e
+                  ) =>
+                    e.preventDefault()
+                  }
+                  onDrop={
+                    handleImageDrop
+                  }
+                  className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center h-[260px] flex flex-col justify-center"
+                >
+                  <p className="text-[#52606d] font-semibold">
+                    Drag & Drop
+                    Images Here
+                  </p>
+
+                  <p className="text-sm text-[#7b8794] mt-2">
+                    JPG, JPEG &
+                    PNG supported
+                  </p>
+
+                  <input
+                    type="file"
+                    multiple
+                    accept=".jpg,.jpeg,.png"
+                    onChange={(
+                      e
+                    ) =>
+                      handleImageSelect(
+                        e.target
+                          .files
+                      )
+                    }
+                    className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px]"
+                  />
+                </div>
+
+                {/* IMAGE LIST */}
+
+                {imageFiles.length >
+                  0 && (
+                  <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] p-4 text-left max-h-[180px] overflow-y-auto">
+                    <p className="font-black text-[#31475a] mb-3">
+                      Selected
+                      Images (
+                      {
+                        imageFiles.length
+                      }
+                      )
+                    </p>
+
+                    <div className="space-y-2">
+                      {imageFiles.map(
+                        (
+                          file,
+                          index
+                        ) => (
+                          <div
+                            key={
+                              index
+                            }
+                            className="text-sm text-[#52606d] truncate"
+                          >
+                            •{" "}
+                            {
+                              file.name
+                            }
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* BUTTON */}
@@ -592,7 +597,8 @@ function AddItem() {
 
                 <li>
                   Multiple image
-                  upload supported
+                  upload
+                  supported
                 </li>
 
                 <li>
