@@ -83,44 +83,68 @@ function InventoryTableView({
     };
   };
 
+  const headers = [
+    ["Image", ""],
+    ["SKU/St.No", ""],
+    ["Item", ""],
+    ["Client", ""],
+    ["DLC No.", ""],
+    ["Metal", ""],
+    ["PCS", ""],
+
+    ["G-Wt", "Gms"],
+    ["N-Wt", "Gms"],
+
+    ["Mt Value", "US$"],
+
+    ["Diam Wt", "Cts"],
+    ["Diam Value", "US$"],
+
+    ["CS Wt", "Cts"],
+    ["CS Value", "US$"],
+
+    ["Labour", "US$"],
+    ["Amount", "US$"],
+
+    ["DLC Date", ""],
+    ["Expiry Date", ""],
+    ["Sold Date", ""],
+
+    ["Remaining", ""],
+    ["Status", ""],
+  ];
+
   return (
     <>
       <div className="overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
         <table className="w-full min-w-[2600px] bg-white">
           <thead className="sticky top-0 z-20 bg-[#f4f7fa] backdrop-blur-md">
             <tr className="border-b border-[#e6ebef] text-left">
-              {[
-                "Image",
-                "SKU/St.No",
-                "Item",
-                "Client",
-                "DLC No.",
-                "Metal",
-                "PCS",
-                "Gross Wt",
-                "Net Wt",
-                "Diamond Wt",
-                "Diamond Value",
-                "CS Wt",
-                "CS Value",
-                "Labour",
-                "Total Amount",
-                "DLC Date",
-                "Expiry Date",
-                "Sold Date",
-                "Remaining",
-                "Status",
-              ].map(
+              {headers.map(
                 (
                   heading
                 ) => (
                   <th
                     key={
-                      heading
+                      heading[0]
                     }
                     className="p-5 text-sm text-[#5b6b79] font-bold whitespace-nowrap"
                   >
-                    {heading}
+                    <div className="flex flex-col leading-tight">
+                      <span>
+                        {
+                          heading[0]
+                        }
+                      </span>
+
+                      {heading[1] && (
+                        <span className="text-[10px] text-[#9aa5b1] font-semibold mt-1">
+                          {
+                            heading[1]
+                          }
+                        </span>
+                      )}
+                    </div>
                   </th>
                 )
               )}
@@ -212,7 +236,6 @@ function InventoryTableView({
                     {formatWeight(
                       item.grossWeight
                     )}
-                    g
                   </td>
 
                   {/* NET */}
@@ -221,7 +244,15 @@ function InventoryTableView({
                     {formatWeight(
                       item.netWeight
                     )}
-                    g
+                  </td>
+
+                  {/* METAL VALUE */}
+
+                  <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
+                    $
+                    {formatPrice(
+                      item.metalValue
+                    )}
                   </td>
 
                   {/* DIAMOND WT */}
@@ -319,11 +350,9 @@ function InventoryTableView({
                             remaining.type ===
                               "critical"
                               ? "bg-red-100 text-red-700"
-
                               : remaining.type ===
                                 "warning"
                               ? "bg-orange-100 text-orange-700"
-
                               : "bg-blue-100 text-blue-700"
                           }
                         `}
@@ -347,7 +376,6 @@ function InventoryTableView({
                           item.status ===
                           "SOLD"
                             ? "bg-red-100 text-red-700"
-
                             : "bg-green-100 text-green-700"
                         }
                       `}
@@ -355,7 +383,6 @@ function InventoryTableView({
                       {item.status ===
                       "SOLD"
                         ? "SOLD"
-
                         : "AVAILABLE"}
                     </div>
                   </td>
