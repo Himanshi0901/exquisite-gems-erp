@@ -241,8 +241,12 @@ function InventoryTable({
                     {/* DAYS LEFT */}
 
                     {remaining && (
-                      <div className="bg-[#fff1f2] border border-[#fecdd3] rounded-[10px] px-3 py-3 flex items-center justify-center">
-                        <p className="text-[18px] md:text-[24px] font-black text-red-600 leading-none tracking-tight text-center">
+                      <div className="bg-[#fff1f2] border border-[#fecdd3] rounded-[10px] px-3 py-2">
+                        <p className="text-[7px] md:text-[8px] uppercase tracking-wide text-red-400">
+                          Days Left
+                        </p>
+
+                        <p className="text-[28px] md:text-[34px] font-black text-red-600 leading-none tracking-tight mt-2">
                           {
                             remaining.text
                           }
