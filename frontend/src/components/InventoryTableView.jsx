@@ -186,6 +186,32 @@ function InventoryTableView({
                       "-"}
                   </td>
 
+                  {/* CLIENT */}
+
+                  <td className="p-4 text-[#52606d] min-w-[220px]">
+                    <div className="break-words whitespace-normal leading-relaxed">
+                      {item.clientName ||
+                        "-"}
+                    </div>
+                  </td>
+
+                  {/* DLC */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
+                    {item.dlcNo ||
+                      "-"}
+                  </td>
+
+                  {/* DLC DATE */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {item.dlcDate
+                      ? new Date(
+                          item.dlcDate
+                        ).toLocaleDateString()
+                      : "-"}
+                  </td>
+
                   {/* SKU */}
 
                   <td className="p-4 font-black text-[#31475a] whitespace-nowrap">
@@ -324,31 +350,6 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* CLIENT */}
-
-                  <td className="p-4 text-[#52606d] min-w-[220px]">
-                    <div className="break-words whitespace-normal leading-relaxed">
-                      {item.clientName ||
-                        "-"}
-                    </div>
-                  </td>
-
-                  {/* DLC */}
-
-                  <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
-                    {item.dlcNo ||
-                      "-"}
-                  </td>
-
-                  {/* DLC DATE */}
-
-                  <td className="p-4 text-[#52606d] whitespace-nowrap">
-                    {item.dlcDate
-                      ? new Date(
-                          item.dlcDate
-                        ).toLocaleDateString()
-                      : "-"}
-                  </td>
 
                   {/* EXPIRY DATE */}
 
