@@ -122,15 +122,12 @@ function InventoryTable({
                 {/* STATUS */}
 
                 <div
-                  className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-[8px] md:text-[9px] font-bold uppercase tracking-wide shadow-sm
-                  
-                  ${
+                  className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-[8px] md:text-[9px] font-bold uppercase tracking-wide shadow-sm ${
                     item.status ===
                     "SOLD"
                       ? "bg-red-500 text-white"
                       : "bg-green-500 text-white"
-                  }
-                `}
+                  }`}
                 >
                   {item.status ===
                   "SOLD"
@@ -216,12 +213,14 @@ function InventoryTable({
                   </div>
                 </div>
 
-                {/* DATE + REMAINING */}
+                {/* EXPIRY + DAYS */}
 
                 {item.status !==
                 "SOLD" && (
-                  <div className="mt-3 flex items-center justify-between gap-2 bg-[#f8fafb] border border-[#eef2f5] rounded-[12px] px-3 py-2">
-                    <div className="min-w-0">
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {/* EXPIRY DATE */}
+
+                    <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[10px] px-3 py-2">
                       <p className="text-[7px] md:text-[8px] uppercase tracking-wide text-[#9aa5b1]">
                         Expiry Date
                       </p>
@@ -235,31 +234,41 @@ function InventoryTable({
                       </p>
                     </div>
 
+                    {/* DAYS LEFT */}
+
                     {remaining && (
-                      <div
-                        className={`px-2.5 py-1 rounded-full text-[8px] md:text-[9px] font-bold whitespace-nowrap
-                          
-                          ${
-                            remaining.type ===
-                            "expired"
-                              ? "bg-red-100 text-red-600"
-                              : remaining.type ===
-                                "critical"
-                              ? "bg-red-100 text-red-600"
-                              : remaining.type ===
-                                "warning"
-                              ? "bg-orange-100 text-orange-600"
-                              : "bg-blue-100 text-blue-600"
+                      <div className="bg-[#fff1f2] border border-[#fecdd3] rounded-[10px] px-3 py-2">
+                        <p className="text-[7px] md:text-[8px] uppercase tracking-wide text-red-400">
+                          Days Left
+                        </p>
+
+                        <p className="text-[10px] md:text-[11px] font-bold text-red-600 mt-1">
+                          {
+                            remaining.text
                           }
-                        `}
-                      >
-                        {
-                          remaining.text
-                        }
+                        </p>
                       </div>
                     )}
                   </div>
                 )}
+
+                {/* SOLD DATE */}
+
+                {item.status ===
+                  "SOLD" &&
+                  item.soldDate && (
+                    <div className="mt-3 bg-red-50 border border-red-200 rounded-[10px] px-3 py-2">
+                      <p className="text-[7px] md:text-[8px] uppercase tracking-wide text-red-400">
+                        Sold Date
+                      </p>
+
+                      <p className="text-[10px] md:text-[11px] font-bold text-red-600 mt-1">
+                        {new Date(
+                          item.soldDate
+                        ).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
               </div>
             </div>
           );
