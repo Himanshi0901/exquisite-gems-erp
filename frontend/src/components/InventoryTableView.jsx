@@ -85,6 +85,10 @@ function InventoryTableView({
 
   const headers = [
     ["Sr No", ""],
+    ["Client", ""],
+    ["DLC No.", ""],
+
+    ["DLC Date", ""],
     ["SKU/St.No", ""],
     ["Item", ""],
     ["Metal", ""],
@@ -113,10 +117,7 @@ function InventoryTableView({
 
     ["Amount", "US$"],
 
-    ["Client", ""],
-    ["DLC No.", ""],
-
-    ["DLC Date", ""],
+    
     ["Expiry Date", ""],
     ["Sold Date", ""],
 
