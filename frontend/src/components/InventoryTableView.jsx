@@ -117,7 +117,6 @@ function InventoryTableView({
 
     ["Amount", "US$"],
 
-    
     ["Expiry Date", ""],
     ["Sold Date", ""],
 
@@ -128,7 +127,134 @@ function InventoryTableView({
 
   return (
     <>
-      <div className="overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
+      {/* MOBILE VIEW */}
+
+      <div className="md:hidden space-y-4">
+        {items.map(
+          (item) => {
+            const remaining =
+              getRemainingDays(
+                item.expiryDate
+              );
+
+            return (
+              <div
+                key={item.id}
+                onClick={() =>
+                  setSelectedItem(
+                    item
+                  )
+                }
+                className="bg-white border border-[#dfe5ea] rounded-[22px] p-4 shadow-[0_4px_18px_rgba(0,0,0,0.04)]"
+              >
+                <div className="flex gap-4">
+                  <img
+                    src={
+                      item.image ||
+                      "https://via.placeholder.com/100"
+                    }
+                    onError={(
+                      e
+                    ) => {
+                      e.target.src =
+                        "https://via.placeholder.com/100";
+                    }}
+                    className="w-24 h-24 rounded-[18px] object-cover border border-[#dfe5ea]"
+                  />
+
+                  <div className="flex-1 min-w-0">
+                    <div className="text-lg font-black text-[#31475a] truncate">
+                      {
+                        item.skuStNo
+                      }
+                    </div>
+
+                    <div className="text-sm text-[#52606d] mt-1">
+                      {
+                        item.item
+                      }
+                    </div>
+
+                    <div className="text-sm text-[#52606d]">
+                      {
+                        item.clientName
+                      }
+                    </div>
+
+                    <div className="text-sm font-semibold text-[#1f2933] mt-2">
+                      $
+                      {formatPrice(
+                        item.amount
+                      )}
+                    </div>
+
+                    <div className="text-xs text-[#7b8794] mt-1">
+                      DLC:
+                      {" "}
+                      {
+                        item.dlcNo
+                      }
+                    </div>
+
+                    <div className="text-xs text-[#7b8794]">
+                      Sr No:
+                      {" "}
+                      {
+                        item.srNo
+                      }
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <div
+                        className={`px-3 py-1 rounded-full text-xs font-bold
+                          
+                          ${
+                            item.status ===
+                            "SOLD"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-green-100 text-green-700"
+                          }
+                        `}
+                      >
+                        {
+                          item.status
+                        }
+                      </div>
+
+                      {remaining && (
+                        <div
+                          className={`px-3 py-1 rounded-full text-xs font-bold
+                            
+                            ${
+                              remaining.type ===
+                                "expired" ||
+                              remaining.type ===
+                                "critical"
+                                ? "bg-red-100 text-red-700"
+                                : remaining.type ===
+                                  "warning"
+                                ? "bg-orange-100 text-orange-700"
+                                : "bg-blue-100 text-blue-700"
+                            }
+                          `}
+                        >
+                          {
+                            remaining.text
+                          }
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+        )}
+      </div>
+
+      {/* DESKTOP TABLE */}
+
+      <div className="hidden md:block overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
         <table className="w-full min-w-[4200px] bg-white">
           <thead className="sticky top-0 z-20 bg-[#f4f7fa] backdrop-blur-md">
             <tr className="border-b border-[#e6ebef] text-left">
@@ -180,14 +306,10 @@ function InventoryTableView({
                   }
                   className="border-b border-[#eef2f5] hover:bg-[#f8fafb] cursor-pointer transition-all duration-200"
                 >
-                  {/* SR NO */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.srNo ||
                       "-"}
                   </td>
-
-                  {/* CLIENT */}
 
                   <td className="p-4 text-[#52606d] min-w-[220px]">
                     <div className="break-words whitespace-normal leading-relaxed">
@@ -196,14 +318,10 @@ function InventoryTableView({
                     </div>
                   </td>
 
-                  {/* DLC */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
                     {item.dlcNo ||
                       "-"}
                   </td>
-
-                  {/* DLC DATE */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.dlcDate
@@ -213,42 +331,30 @@ function InventoryTableView({
                       : "-"}
                   </td>
 
-                  {/* SKU */}
-
                   <td className="p-4 font-black text-[#31475a] whitespace-nowrap">
                     {
                       item.skuStNo
                     }
                   </td>
 
-                  {/* ITEM */}
-
                   <td className="p-4 text-[#1f2933] font-semibold whitespace-nowrap">
                     {item.item}
                   </td>
-
-                  {/* METAL */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.metal ||
                       "-"}
                   </td>
 
-                  {/* HSN */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.hsn ||
                       "-"}
                   </td>
 
-                  {/* PCS */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.pcs ||
                       "-"}
                   </td>
-
-                  {/* DESCRIPTION */}
 
                   <td className="p-4 text-[#52606d] min-w-[180px] max-w-[220px]">
                     <div className="break-words whitespace-normal leading-relaxed line-clamp-3 text-sm">
@@ -257,23 +363,17 @@ function InventoryTableView({
                     </div>
                   </td>
 
-                  {/* GROSS */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {formatWeight(
                       item.grossWeight
                     )}
                   </td>
 
-                  {/* NET */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {formatWeight(
                       item.netWeight
                     )}
                   </td>
-
-                  {/* METAL VALUE */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
@@ -282,15 +382,11 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* DIAMOND WT */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {formatWeight(
                       item.diamondWeight
                     )}
                   </td>
-
-                  {/* DIAMOND VALUE */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
@@ -299,15 +395,11 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* CS WT */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {formatWeight(
                       item.csWeight
                     )}
                   </td>
-
-                  {/* CS VALUE */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
@@ -316,15 +408,11 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* OTHER WT */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {formatWeight(
                       item.otherWeight
                     )}
                   </td>
-
-                  {/* OTHER VALUE */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
@@ -333,8 +421,6 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* LABOUR */}
-
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
                     $
                     {formatPrice(
@@ -342,17 +428,12 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* AMOUNT */}
-
                   <td className="p-4 font-black text-[#1f2933] whitespace-nowrap">
                     $
                     {formatPrice(
                       item.amount
                     )}
                   </td>
-
-
-                  {/* EXPIRY DATE */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.expiryDate
@@ -362,8 +443,6 @@ function InventoryTableView({
                       : "-"}
                   </td>
 
-                  {/* SOLD DATE */}
-
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.soldDate
                       ? new Date(
@@ -371,8 +450,6 @@ function InventoryTableView({
                         ).toLocaleDateString()
                       : "-"}
                   </td>
-
-                  {/* REMAINING */}
 
                   <td className="p-4">
                     {remaining ? (
@@ -401,8 +478,6 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* STATUS */}
-
                   <td className="p-4">
                     <div
                       className={`inline-flex px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap
@@ -421,8 +496,6 @@ function InventoryTableView({
                         : "AVAILABLE"}
                     </div>
                   </td>
-
-                  {/* IMAGE */}
 
                   <td className="p-4">
                     <img
