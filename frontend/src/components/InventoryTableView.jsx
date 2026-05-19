@@ -85,6 +85,7 @@ function InventoryTableView({
 
   const headers = [
     ["Sr No", ""],
+    ["Image", ""],
     ["SKU/St.No", ""],
     ["Item", ""],
     ["Metal", ""],
@@ -122,7 +123,7 @@ function InventoryTableView({
 
     ["Remaining", ""],
     ["Status", ""],
-    ["Image", ""],
+    
   ];
 
   return (
@@ -311,6 +312,22 @@ function InventoryTableView({
                       "-"}
                   </td>
 
+                  <td className="p-4">
+                    <img
+                      src={
+                        item.image ||
+                        "https://via.placeholder.com/100"
+                      }
+                      onError={(
+                        e
+                      ) => {
+                        e.target.src =
+                          "https://via.placeholder.com/100";
+                      }}
+                      className="w-16 h-16 rounded-[16px] object-cover border border-[#dfe5ea] bg-[#f8fafb]"
+                    />
+                  </td>
+
                   <td className="p-4 font-black text-[#31475a] whitespace-nowrap">
                     {
                       item.skuStNo
@@ -495,22 +512,6 @@ function InventoryTableView({
                         ? "SOLD"
                         : "AVAILABLE"}
                     </div>
-                  </td>
-
-                  <td className="p-4">
-                    <img
-                      src={
-                        item.image ||
-                        "https://via.placeholder.com/100"
-                      }
-                      onError={(
-                        e
-                      ) => {
-                        e.target.src =
-                          "https://via.placeholder.com/100";
-                      }}
-                      className="w-16 h-16 rounded-[16px] object-cover border border-[#dfe5ea] bg-[#f8fafb]"
-                    />
                   </td>
                 </tr>
               );
