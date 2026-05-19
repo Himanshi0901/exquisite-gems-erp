@@ -304,19 +304,6 @@ function Inventory() {
               "Sr No":
                 item.srNo,
 
-              Client:
-                item.clientName,
-
-              "DLC No.":
-                item.dlcNo,
-
-              "DLC Date":
-                item.dlcDate
-                  ? new Date(
-                      item.dlcDate
-                    ).toLocaleDateString()
-                  : "-",
-
               "SKU/St.No":
                 item.skuStNo,
 
@@ -389,6 +376,19 @@ function Inventory() {
                 formatPrice(
                   item.amount
                 ),
+
+              Client:
+                item.clientName,
+
+              "DLC No.":
+                item.dlcNo,
+
+              "DLC Date":
+                item.dlcDate
+                  ? new Date(
+                      item.dlcDate
+                    ).toLocaleDateString()
+                  : "-",
 
               "Expiry Date":
                 item.expiryDate
