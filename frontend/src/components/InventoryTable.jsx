@@ -58,27 +58,27 @@ function InventoryTable({
 
     if (days <= 0) {
       return {
-        text: "Expired",
+        text: "EXPIRED",
         type: "expired",
       };
     }
 
     if (days <= 15) {
       return {
-        text: `${days} Days Left`,
+        text: `${days}-DAYSLEFT`,
         type: "critical",
       };
     }
 
     if (days <= 30) {
       return {
-        text: `${days} Days Left`,
+        text: `${days}-DAYSLEFT`,
         type: "warning",
       };
     }
 
     return {
-      text: `${days} Days Left`,
+      text: `${days}-DAYSLEFT`,
       type: "safe",
     };
   };
@@ -146,10 +146,6 @@ function InventoryTable({
                         item.skuStNo
                       }
                     </h2>
-
-                    <p className="text-[#52606d] text-[9px] md:text-[10px] mt-1 uppercase tracking-wide truncate">
-                      {item.item}
-                    </p>
                   </div>
 
                   <button className="text-[#9aa5b1] text-lg leading-none">
@@ -159,7 +155,15 @@ function InventoryTable({
 
                 {/* INFO */}
 
-                <div className="mt-2 flex items-center gap-1.5 text-[9px] md:text-[10px] text-[#52606d] flex-wrap">
+                <div className="mt-2 flex items-center gap-1.5 text-[9px] md:text-[11px] text-[#52606d] flex-wrap">
+                  <span className="uppercase tracking-wide">
+                    {item.item}
+                  </span>
+
+                  <span>
+                    •
+                  </span>
+
                   <span>
                     {item.metal}
                   </span>
@@ -179,7 +183,7 @@ function InventoryTable({
                     •
                   </span>
 
-                  <span className="font-bold text-[#1f2933]">
+                  <span className="font-black text-[#102a43]">
                     $
                     {formatPrice(
                       item.amount
@@ -237,12 +241,8 @@ function InventoryTable({
                     {/* DAYS LEFT */}
 
                     {remaining && (
-                      <div className="bg-[#fff1f2] border border-[#fecdd3] rounded-[10px] px-3 py-2">
-                        <p className="text-[7px] md:text-[8px] uppercase tracking-wide text-red-400">
-                          Days Left
-                        </p>
-
-                        <p className="text-[10px] md:text-[11px] font-bold text-red-600 mt-1">
+                      <div className="bg-[#fff1f2] border border-[#fecdd3] rounded-[10px] px-3 py-3 flex items-center justify-center">
+                        <p className="text-[18px] md:text-[24px] font-black text-red-600 leading-none tracking-tight text-center">
                           {
                             remaining.text
                           }
