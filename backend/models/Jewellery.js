@@ -101,9 +101,9 @@ const Jewellery =
           "IN_STOCK",
       },
 
-      // SENT DATE
+      // DLC DATE
 
-      sentDate: {
+      dlcDate: {
         type: DataTypes.DATE,
 
         defaultValue:

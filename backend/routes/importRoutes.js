@@ -81,6 +81,87 @@ router.post(
           });
       }
 
+      /* ---------------- DLC DETAILS FROM FILE NAME ---------------- */
+
+      const originalName =
+        path.parse(
+          excelFile.originalname
+        ).name;
+
+      /* DATE */
+
+      const dateMatch =
+        originalName.match(
+          /\d{2}-\d{2}-\d{4}/
+        );
+
+      const dlcDate =
+        dateMatch
+          ? new Date(
+              dateMatch[0]
+                .split("-")
+                .reverse()
+                .join("-")
+            )
+          : new Date();
+
+      /* REMOVE DATE */
+
+      const withoutDate =
+        originalName
+          .replace(
+            dateMatch?.[0] ||
+              "",
+            ""
+          )
+          .trim();
+
+      /* DLC NO */
+
+      const dlcNoMatch =
+        withoutDate.match(
+          /^([A-Z0-9-]+)/
+        );
+
+      const dlcNo =
+        dlcNoMatch
+          ? dlcNoMatch[0]
+          : "";
+
+      /* CLIENT NAME */
+
+      const clientName =
+        withoutDate
+          .replace(
+            dlcNo,
+            ""
+          )
+          .replace(
+            /\.+/g,
+            ""
+          )
+          .trim();
+
+      /* EXPIRY DATE */
+
+      const expiryDate =
+        new Date(
+          dlcDate
+        );
+
+      expiryDate.setMonth(
+        expiryDate.getMonth() +
+          6
+      );
+
+      console.log({
+        dlcNo,
+        clientName,
+        dlcDate,
+      });
+
+      /* ---------------- READ EXCEL ---------------- */
+
       const workbook =
         XLSX.readFile(
           excelFile.path
@@ -93,7 +174,10 @@ router.post(
         XLSX.utils.sheet_to_json(
           workbook.Sheets[
             sheetName
-          ]
+          ],
+          {
+            range: 12,
+          }
         );
 
       /* ---------------- TEMP IMAGE FOLDER ---------------- */
@@ -229,6 +313,7 @@ router.post(
             ".jpg",
             ".jpeg",
             ".png",
+            ".webp",
           ];
 
         let foundImage =
@@ -317,19 +402,6 @@ router.post(
           );
         }
 
-        /* ---------------- DATES ---------------- */
-
-        const sentDate =
-          new Date();
-
-        const expiryDate =
-          new Date();
-
-        expiryDate.setMonth(
-          expiryDate.getMonth() +
-            6
-        );
-
         /* ---------------- SAVE ---------------- */
 
         await Jewellery.create(
@@ -340,14 +412,10 @@ router.post(
               ],
 
             dlcNo:
-              cleanedRow[
-                "DLC No."
-              ],
+              dlcNo,
 
             clientName:
-              cleanedRow[
-                "Client Name"
-              ],
+              clientName,
 
             skuStNo:
               cleanedRow[
@@ -380,59 +448,81 @@ router.post(
               ],
 
             grossWeight:
-              cleanedRow[
-                "G-Wt"
-              ],
+              Number(
+                cleanedRow[
+                  "G-Wt"
+                ] || 0
+              ).toFixed(3),
 
             netWeight:
-              cleanedRow[
-                "N-Wt"
-              ],
+              Number(
+                cleanedRow[
+                  "N-Wt"
+                ] || 0
+              ).toFixed(3),
 
             metalValue:
-              cleanedRow[
-                "Mt Value"
-              ],
+              Number(
+                cleanedRow[
+                  "Mt Value"
+                ] || 0
+              ).toFixed(2),
 
             diamondWeight:
-              cleanedRow[
-                "Diam Wt"
-              ],
+              Number(
+                cleanedRow[
+                  "Diam Wt"
+                ] || 0
+              ).toFixed(3),
 
             diamondValue:
-              cleanedRow[
-                "Diam Value"
-              ],
+              Number(
+                cleanedRow[
+                  "Diam Value"
+                ] || 0
+              ).toFixed(2),
 
             csWeight:
-              cleanedRow[
-                "CS Wt"
-              ],
+              Number(
+                cleanedRow[
+                  "CS Wt"
+                ] || 0
+              ).toFixed(3),
 
             csValue:
-              cleanedRow[
-                "CS Value"
-              ],
+              Number(
+                cleanedRow[
+                  "CS Value"
+                ] || 0
+              ).toFixed(2),
 
             otherWeight:
-              cleanedRow[
-                "Oth Wt"
-              ],
+              Number(
+                cleanedRow[
+                  "Oth Wt"
+                ] || 0
+              ).toFixed(3),
 
             otherValue:
-              cleanedRow[
-                "Oth Val"
-              ],
+              Number(
+                cleanedRow[
+                  "Oth Val"
+                ] || 0
+              ).toFixed(2),
 
             labourValue:
-              cleanedRow[
-                "Labour & Value Addition"
-              ],
+              Number(
+                cleanedRow[
+                  "Labour & Value Addition"
+                ] || 0
+              ).toFixed(2),
 
             amount:
-              cleanedRow[
-                "Amount"
-              ],
+              Number(
+                cleanedRow[
+                  "Amount"
+                ] || 0
+              ).toFixed(2),
 
             image:
               imageUrl,
@@ -440,9 +530,11 @@ router.post(
             status:
               "IN_STOCK",
 
-            sentDate,
+            dlcDate:
+              dlcDate,
 
-            expiryDate,
+            expiryDate:
+              expiryDate,
           }
         );
       }
