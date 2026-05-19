@@ -20,14 +20,19 @@ function AddItem() {
   ] = useState(false);
 
   const [
-    error,
-    setError,
+    dialogOpen,
+    setDialogOpen,
+  ] = useState(false);
+
+  const [
+    dialogMessage,
+    setDialogMessage,
   ] = useState("");
 
   const [
-    success,
-    setSuccess,
-  ] = useState("");
+    dialogType,
+    setDialogType,
+  ] = useState("error");
 
   const [
     clientName,
@@ -105,8 +110,7 @@ function AddItem() {
 
   const handleImport =
     async () => {
-      setError("");
-      setSuccess("");
+      setDialogOpen(false);
 
       if (
         !clientName ||
@@ -116,8 +120,16 @@ function AddItem() {
         imageFiles.length ===
           0
       ) {
-        setError(
+        setDialogType(
+          "error"
+        );
+
+        setDialogMessage(
           "Please fill all required fields and upload both Excel and Images."
+        );
+
+        setDialogOpen(
+          true
         );
 
         return;
@@ -171,8 +183,16 @@ function AddItem() {
           }
         );
 
-        setSuccess(
+        setDialogType(
+          "success"
+        );
+
+        setDialogMessage(
           "Inventory imported successfully."
+        );
+
+        setDialogOpen(
+          true
         );
 
         setClientName(
@@ -201,10 +221,18 @@ function AddItem() {
       } catch (error) {
         console.log(error);
 
-        setError(
+        setDialogType(
+          "error"
+        );
+
+        setDialogMessage(
           error?.response
             ?.data?.error ||
             "Import failed"
+        );
+
+        setDialogOpen(
+          true
         );
       } finally {
         setLoading(false);
@@ -232,19 +260,60 @@ function AddItem() {
 
         <div className="bg-white border border-[#dfe5ea] rounded-[32px] p-6 md:p-8 shadow-sm">
           <div className="border-2 border-dashed border-[#cbd5df] rounded-[28px] p-8 md:p-14 bg-[#f8fafb]">
-            {/* ERROR */}
+            {/* DIALOG */}
 
-            {error && (
-              <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-5 py-4 rounded-2xl font-semibold">
-                {error}
-              </div>
-            )}
+            {dialogOpen && (
+              <div className="fixed inset-0 z-[999] bg-black/40 flex items-center justify-center p-4">
+                <div className="bg-white w-full max-w-md rounded-[28px] shadow-2xl p-8 text-center">
+                  <div
+                    className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl font-black
+                      
+                      ${
+                        dialogType ===
+                        "success"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
+                      }
+                    `}
+                  >
+                    {dialogType ===
+                    "success"
+                      ? "✓"
+                      : "!"}
+                  </div>
 
-            {/* SUCCESS */}
+                  <h2 className="mt-5 text-2xl font-black text-[#102a43]">
+                    {dialogType ===
+                    "success"
+                      ? "Success"
+                      : "Error"}
+                  </h2>
 
-            {success && (
-              <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-2xl font-semibold">
-                {success}
+                  <p className="mt-4 text-[#52606d] leading-relaxed">
+                    {
+                      dialogMessage
+                    }
+                  </p>
+
+                  <button
+                    onClick={() =>
+                      setDialogOpen(
+                        false
+                      )
+                    }
+                    className={`mt-8 w-full py-4 rounded-2xl font-black text-white transition
+                      
+                      ${
+                        dialogType ===
+                        "success"
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-red-600 hover:bg-red-700"
+                      }
+                    `}
+                  >
+                    OK
+                  </button>
+                </div>
               </div>
             )}
 
@@ -387,12 +456,17 @@ function AddItem() {
                 Download Sample
                 Format
               </a>
+
+              {/* NOTE */}
+
               <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
                 <p className="text-sm font-semibold text-amber-700 leading-relaxed">
                   Important:
                   <span className="font-black">
                     {" "}
-                    Image column in Excel must remain blank.
+                    Image column in
+                    Excel must
+                    remain blank.
                   </span>
                 </p>
               </div>
