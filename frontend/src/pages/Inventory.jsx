@@ -15,8 +15,6 @@ import MainLayout from "../layouts/MainLayout";
 
 import InventoryTable from "../components/InventoryTable";
 
-import JewelleryDrawer
- from "../components/JewelleryDrawer";
 import InventoryTableView from "../components/InventoryTableView";
 
 import { InventoryContext } from "../context/InventoryContext";
