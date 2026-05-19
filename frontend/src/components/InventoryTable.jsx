@@ -246,7 +246,7 @@ function InventoryTable({
                           Days Left
                         </p>
 
-                        <p className="text-[22px] md:text-[28px] font-black text-red-600 leading-none tracking-tight mt-2 break-words text-center">
+                        <p className="text-[20px] md:text-[28px] font-black text-red-600 leading-none tracking-tight mt-2 break-words text-center">
                           {
                             remaining.text
                           }
