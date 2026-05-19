@@ -43,7 +43,7 @@ function Inventory() {
   const [dlcFilter, setDlcFilter] =
     useState("ALL");
 
-    
+
   const [sortBy, setSortBy] =
     useState("latest");
 
@@ -343,10 +343,10 @@ function Inventory() {
             Description:
               item.description,
 
-            "Sent Date":
-              item.sentDate
+            "DLC Date":
+              item.dlcDate
                 ? new Date(
-                    item.sentDate
+                    item.dlcDate
                   ).toLocaleDateString()
                 : "-",
 

@@ -297,13 +297,13 @@ function JewelleryDrawer({
               <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 mt-2">
                 <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[14px] p-2.5">
                   <p className="text-[7px] uppercase text-[#7b8794]">
-                    Sent Date
+                    DLC Date
                   </p>
 
                   <p className="mt-1 text-[11px] font-bold text-[#1f2933]">
-                    {item.sentDate
+                    {item.dlcDate
                       ? new Date(
-                          item.sentDate
+                          item.dlcDate
                         ).toLocaleDateString()
                       : "-"}
                   </p>
