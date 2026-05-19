@@ -78,7 +78,7 @@ function InventoryTable({
     }
 
     return {
-      text: `${days}-DAYSLEFT`,
+      text: `${days}`,
       type: "safe",
     };
   };
