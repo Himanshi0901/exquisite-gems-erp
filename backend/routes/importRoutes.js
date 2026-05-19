@@ -1,19 +1,12 @@
 require("dotenv").config();
 
 const express = require("express");
-
 const multer = require("multer");
-
 const XLSX = require("xlsx");
-
 const fs = require("fs");
-
 const path = require("path");
-
 const mime = require("mime-types");
-
-const AdmZip =
-  require("adm-zip");
+const AdmZip = require("adm-zip");
 
 const {
   createClient,
@@ -273,18 +266,27 @@ router.post(
           }
         );
 
-        if (
-          !cleanedRow[
-            "SKU/St.No"
-          ]
-        ) {
-          console.log(
-            "Missing SKU:",
-            cleanedRow
-          );
+        /* ---------------- SKIP TOTAL ROW ---------------- */
 
+        const skuValue =
+          cleanedRow[
+            "SKU/St.No"
+          ];
+
+        if (
+          !skuValue ||
+          String(
+            skuValue
+          )
+            .toUpperCase()
+            .includes(
+              "TOTAL"
+            )
+        ) {
           continue;
         }
+
+        /* ---------------- DUPLICATE CHECK ---------------- */
 
         if (
           existingSkuSet.has(
@@ -353,7 +355,8 @@ router.post(
               .split(".")
               .pop();
 
-          const fileName = `${sku}-${Date.now()}.${extension}`;
+          const fileName =
+            `${sku}-${Date.now()}.${extension}`;
 
           const {
             error,
@@ -404,139 +407,137 @@ router.post(
 
         /* ---------------- SAVE ---------------- */
 
-        await Jewellery.create(
-          {
-            srNo:
+        await Jewellery.create({
+          srNo:
+            cleanedRow[
+              "SrNo"
+            ],
+
+          dlcNo:
+            dlcNo,
+
+          clientName:
+            clientName,
+
+          skuStNo:
+            cleanedRow[
+              "SKU/St.No"
+            ],
+
+          item:
+            cleanedRow[
+              "Item"
+            ],
+
+          metal:
+            cleanedRow[
+              "Metal"
+            ],
+
+          hsn:
+            cleanedRow[
+              "HSN"
+            ],
+
+          pcs:
+            cleanedRow[
+              "Pcs/Pair"
+            ],
+
+          description:
+            cleanedRow[
+              "Description"
+            ],
+
+          grossWeight:
+            Number(
               cleanedRow[
-                "SrNo"
-              ],
+                "G-Wt"
+              ] || 0
+            ).toFixed(3),
 
-            dlcNo:
-              dlcNo,
-
-            clientName:
-              clientName,
-
-            skuStNo:
+          netWeight:
+            Number(
               cleanedRow[
-                "SKU/St.No"
-              ],
+                "N-Wt"
+              ] || 0
+            ).toFixed(3),
 
-            item:
+          metalValue:
+            Number(
               cleanedRow[
-                "Item"
-              ],
+                "Mt Value"
+              ] || 0
+            ).toFixed(2),
 
-            metal:
+          diamondWeight:
+            Number(
               cleanedRow[
-                "Metal"
-              ],
+                "Diam Wt"
+              ] || 0
+            ).toFixed(3),
 
-            hsn:
+          diamondValue:
+            Number(
               cleanedRow[
-                "HSN"
-              ],
+                "Diam Value"
+              ] || 0
+            ).toFixed(2),
 
-            pcs:
+          csWeight:
+            Number(
               cleanedRow[
-                "Pcs/Pair"
-              ],
+                "CS Wt"
+              ] || 0
+            ).toFixed(3),
 
-            description:
+          csValue:
+            Number(
               cleanedRow[
-                "Description"
-              ],
+                "CS Value"
+              ] || 0
+            ).toFixed(2),
 
-            grossWeight:
-              Number(
-                cleanedRow[
-                  "G-Wt"
-                ] || 0
-              ).toFixed(3),
+          otherWeight:
+            Number(
+              cleanedRow[
+                "Oth Wt"
+              ] || 0
+            ).toFixed(3),
 
-            netWeight:
-              Number(
-                cleanedRow[
-                  "N-Wt"
-                ] || 0
-              ).toFixed(3),
+          otherValue:
+            Number(
+              cleanedRow[
+                "Oth Val"
+              ] || 0
+            ).toFixed(2),
 
-            metalValue:
-              Number(
-                cleanedRow[
-                  "Mt Value"
-                ] || 0
-              ).toFixed(2),
+          labourValue:
+            Number(
+              cleanedRow[
+                "Labour & Value Addition"
+              ] || 0
+            ).toFixed(2),
 
-            diamondWeight:
-              Number(
-                cleanedRow[
-                  "Diam Wt"
-                ] || 0
-              ).toFixed(3),
+          amount:
+            Number(
+              cleanedRow[
+                "Amount"
+              ] || 0
+            ).toFixed(2),
 
-            diamondValue:
-              Number(
-                cleanedRow[
-                  "Diam Value"
-                ] || 0
-              ).toFixed(2),
+          image:
+            imageUrl,
 
-            csWeight:
-              Number(
-                cleanedRow[
-                  "CS Wt"
-                ] || 0
-              ).toFixed(3),
+          status:
+            "IN_STOCK",
 
-            csValue:
-              Number(
-                cleanedRow[
-                  "CS Value"
-                ] || 0
-              ).toFixed(2),
+          dlcDate:
+            dlcDate,
 
-            otherWeight:
-              Number(
-                cleanedRow[
-                  "Oth Wt"
-                ] || 0
-              ).toFixed(3),
-
-            otherValue:
-              Number(
-                cleanedRow[
-                  "Oth Val"
-                ] || 0
-              ).toFixed(2),
-
-            labourValue:
-              Number(
-                cleanedRow[
-                  "Labour & Value Addition"
-                ] || 0
-              ).toFixed(2),
-
-            amount:
-              Number(
-                cleanedRow[
-                  "Amount"
-                ] || 0
-              ).toFixed(2),
-
-            image:
-              imageUrl,
-
-            status:
-              "IN_STOCK",
-
-            dlcDate:
-              dlcDate,
-
-            expiryDate:
-              expiryDate,
-          }
-        );
+          expiryDate:
+            expiryDate,
+        });
       }
 
       /* ---------------- CLEANUP ---------------- */
@@ -598,13 +599,11 @@ router.post(
         error
       );
 
-      res.status(500).json(
-        {
-          error:
-            error.message ||
-            "Import Failed",
-        }
-      );
+      res.status(500).json({
+        error:
+          error.message ||
+          "Import Failed",
+      });
     }
   }
 );
