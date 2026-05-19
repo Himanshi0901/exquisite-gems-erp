@@ -84,13 +84,13 @@ function InventoryTableView({
   };
 
   const headers = [
-    ["Image", ""],
+    ["Sr No", ""],
     ["SKU/St.No", ""],
     ["Item", ""],
-    ["Client", ""],
-    ["DLC No.", ""],
     ["Metal", ""],
-    ["PCS", ""],
+    ["HSN", ""],
+    ["Pcs/Pair", ""],
+    ["Description", ""],
 
     ["G-Wt", "Gms"],
     ["N-Wt", "Gms"],
@@ -103,8 +103,18 @@ function InventoryTableView({
     ["CS Wt", "Cts"],
     ["CS Value", "US$"],
 
-    ["Labour", "US$"],
+    ["Oth Wt", "Gms"],
+    ["Oth Val", "US$"],
+
+    [
+      "Labour & Value Addition",
+      "US$",
+    ],
+
     ["Amount", "US$"],
+
+    ["Client", ""],
+    ["DLC No.", ""],
 
     ["DLC Date", ""],
     ["Expiry Date", ""],
@@ -112,12 +122,13 @@ function InventoryTableView({
 
     ["Remaining", ""],
     ["Status", ""],
+    ["Image", ""],
   ];
 
   return (
     <>
       <div className="overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
-        <table className="w-full min-w-[2600px] bg-white">
+        <table className="w-full min-w-[4200px] bg-white">
           <thead className="sticky top-0 z-20 bg-[#f4f7fa] backdrop-blur-md">
             <tr className="border-b border-[#e6ebef] text-left">
               {headers.map(
@@ -168,22 +179,11 @@ function InventoryTableView({
                   }
                   className="border-b border-[#eef2f5] hover:bg-[#f8fafb] cursor-pointer transition-all duration-200"
                 >
-                  {/* IMAGE */}
+                  {/* SR NO */}
 
-                  <td className="p-4">
-                    <img
-                      src={
-                        item.image ||
-                        "https://via.placeholder.com/100"
-                      }
-                      onError={(
-                        e
-                      ) => {
-                        e.target.src =
-                          "https://via.placeholder.com/100";
-                      }}
-                      className="w-16 h-16 rounded-[16px] object-cover border border-[#dfe5ea] bg-[#f8fafb]"
-                    />
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {item.srNo ||
+                      "-"}
                   </td>
 
                   {/* SKU */}
@@ -200,26 +200,17 @@ function InventoryTableView({
                     {item.item}
                   </td>
 
-                  {/* CLIENT */}
-
-                  <td className="p-4 text-[#52606d] min-w-[220px]">
-                    <div className="break-words whitespace-normal leading-relaxed">
-                      {item.clientName ||
-                        "-"}
-                    </div>
-                  </td>
-
-                  {/* DLC */}
-
-                  <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
-                    {item.dlcNo ||
-                      "-"}
-                  </td>
-
                   {/* METAL */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.metal ||
+                      "-"}
+                  </td>
+
+                  {/* HSN */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {item.hsn ||
                       "-"}
                   </td>
 
@@ -228,6 +219,15 @@ function InventoryTableView({
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
                     {item.pcs ||
                       "-"}
+                  </td>
+
+                  {/* DESCRIPTION */}
+
+                  <td className="p-4 text-[#52606d] min-w-[300px]">
+                    <div className="break-words whitespace-normal">
+                      {item.description ||
+                        "-"}
+                    </div>
                   </td>
 
                   {/* GROSS */}
@@ -289,6 +289,23 @@ function InventoryTableView({
                     )}
                   </td>
 
+                  {/* OTHER WT */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {formatWeight(
+                      item.otherWeight
+                    )}
+                  </td>
+
+                  {/* OTHER VALUE */}
+
+                  <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
+                    $
+                    {formatPrice(
+                      item.otherValue
+                    )}
+                  </td>
+
                   {/* LABOUR */}
 
                   <td className="p-4 font-semibold text-[#1f2933] whitespace-nowrap">
@@ -298,13 +315,29 @@ function InventoryTableView({
                     )}
                   </td>
 
-                  {/* TOTAL */}
+                  {/* AMOUNT */}
 
                   <td className="p-4 font-black text-[#1f2933] whitespace-nowrap">
                     $
                     {formatPrice(
                       item.amount
                     )}
+                  </td>
+
+                  {/* CLIENT */}
+
+                  <td className="p-4 text-[#52606d] min-w-[220px]">
+                    <div className="break-words whitespace-normal leading-relaxed">
+                      {item.clientName ||
+                        "-"}
+                    </div>
+                  </td>
+
+                  {/* DLC */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap font-semibold">
+                    {item.dlcNo ||
+                      "-"}
                   </td>
 
                   {/* DLC DATE */}
@@ -385,6 +418,24 @@ function InventoryTableView({
                         ? "SOLD"
                         : "AVAILABLE"}
                     </div>
+                  </td>
+
+                  {/* IMAGE */}
+
+                  <td className="p-4">
+                    <img
+                      src={
+                        item.image ||
+                        "https://via.placeholder.com/100"
+                      }
+                      onError={(
+                        e
+                      ) => {
+                        e.target.src =
+                          "https://via.placeholder.com/100";
+                      }}
+                      className="w-16 h-16 rounded-[16px] object-cover border border-[#dfe5ea] bg-[#f8fafb]"
+                    />
                   </td>
                 </tr>
               );
