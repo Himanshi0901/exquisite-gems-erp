@@ -1,4 +1,3 @@
-```js
 require("dotenv").config();
 
 const express = require("express");
@@ -13,9 +12,11 @@ const {
   createClient,
 } = require("@supabase/supabase-js");
 
-const Jewellery = require("../models/Jewellery");
+const Jewellery =
+  require("../models/Jewellery");
 
-const router = express.Router();
+const router =
+  express.Router();
 
 const upload = multer({
   dest: "uploads/",
@@ -101,8 +102,12 @@ router.post(
         }
       }
 
-      const sentDate =
+      /* DLC DATE */
+
+      const dlcDate =
         new Date();
+
+      /* EXPIRY DATE */
 
       const expiryDate =
         new Date();
@@ -118,7 +123,7 @@ router.post(
 
           image: imageUrl,
 
-          sentDate,
+          dlcDate,
 
           expiryDate,
         });
@@ -180,7 +185,7 @@ router.patch(
           status:
             "IN_DUBAI",
 
-          sentDate:
+          dlcDate:
             today,
 
           expiryDate:
@@ -273,4 +278,3 @@ router.patch(
 );
 
 module.exports = router;
-```

@@ -86,7 +86,7 @@ function InventoryTableView({
   return (
     <>
       <div className="overflow-x-auto rounded-[24px] border border-[#dfe5ea] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.04)]">
-        <table className="w-full min-w-[2450px] bg-white">
+        <table className="w-full min-w-[2600px] bg-white">
           <thead className="sticky top-0 z-20 bg-[#f4f7fa] backdrop-blur-md">
             <tr className="border-b border-[#e6ebef] text-left">
               {[
@@ -105,6 +105,7 @@ function InventoryTableView({
                 "CS Value",
                 "Labour",
                 "Total Amount",
+                "DLC Date",
                 "Expiry Date",
                 "Sold Date",
                 "Remaining",
@@ -275,6 +276,16 @@ function InventoryTableView({
                     )}
                   </td>
 
+                  {/* DLC DATE */}
+
+                  <td className="p-4 text-[#52606d] whitespace-nowrap">
+                    {item.dlcDate
+                      ? new Date(
+                          item.dlcDate
+                        ).toLocaleDateString()
+                      : "-"}
+                  </td>
+
                   {/* EXPIRY DATE */}
 
                   <td className="p-4 text-[#52606d] whitespace-nowrap">
@@ -304,11 +315,9 @@ function InventoryTableView({
                           
                           ${
                             remaining.type ===
-                            "expired"
-                              ? "bg-red-100 text-red-700"
-
-                              : remaining.type ===
-                                "critical"
+                              "expired" ||
+                            remaining.type ===
+                              "critical"
                               ? "bg-red-100 text-red-700"
 
                               : remaining.type ===
