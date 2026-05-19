@@ -20,6 +20,31 @@ function AddItem() {
   ] = useState(false);
 
   const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
+
+  const [
+    clientName,
+    setClientName,
+  ] = useState("");
+
+  const [
+    dlcNo,
+    setDlcNo,
+  ] = useState("");
+
+  const [
+    dlcDate,
+    setDlcDate,
+  ] = useState("");
+
+  const [
     excelFile,
     setExcelFile,
   ] = useState(null);
@@ -28,11 +53,6 @@ function AddItem() {
     imageFiles,
     setImageFiles,
   ] = useState([]);
-
-  const [
-    zipFile,
-    setZipFile,
-  ] = useState(null);
 
   /* IMAGE SELECT */
 
@@ -48,7 +68,7 @@ function AddItem() {
       );
     };
 
-  /* IMAGE DRAG DROP */
+  /* IMAGE DROP */
 
   const handleImageDrop =
     (e) => {
@@ -64,7 +84,7 @@ function AddItem() {
       }
     };
 
-  /* EXCEL DRAG DROP */
+  /* EXCEL DROP */
 
   const handleExcelDrop =
     (e) => {
@@ -81,44 +101,23 @@ function AddItem() {
       }
     };
 
-  /* ZIP DROP */
-
-  const handleZipDrop =
-    (e) => {
-      e.preventDefault();
-
-      if (
-        e.dataTransfer.files &&
-        e.dataTransfer.files[0]
-      ) {
-        setZipFile(
-          e.dataTransfer
-            .files[0]
-        );
-      }
-    };
-
   /* IMPORT */
 
   const handleImport =
     async () => {
-      if (
-        !excelFile
-      ) {
-        alert(
-          "Please upload Excel file"
-        );
-
-        return;
-      }
+      setError("");
+      setSuccess("");
 
       if (
+        !clientName ||
+        !dlcNo ||
+        !dlcDate ||
+        !excelFile ||
         imageFiles.length ===
-          0 &&
-        !zipFile
+          0
       ) {
-        alert(
-          "Please upload images or ZIP"
+        setError(
+          "Please fill all required fields and upload both Excel and Images."
         );
 
         return;
@@ -131,11 +130,26 @@ function AddItem() {
           new FormData();
 
         formData.append(
+          "clientName",
+          clientName
+        );
+
+        formData.append(
+          "dlcNo",
+          dlcNo
+        );
+
+        formData.append(
+          "dlcDate",
+          dlcDate
+        );
+
+        formData.append(
           "excel",
           excelFile
         );
 
-        /* MULTIPLE IMAGES */
+        /* IMAGES */
 
         imageFiles.forEach(
           (file) => {
@@ -145,15 +159,6 @@ function AddItem() {
             );
           }
         );
-
-        /* ZIP */
-
-        if (zipFile) {
-          formData.append(
-            "zip",
-            zipFile
-          );
-        }
 
         await axios.post(
           "https://exquisite-gems-erp.onrender.com/api/import",
@@ -166,9 +171,17 @@ function AddItem() {
           }
         );
 
-        alert(
-          "Inventory imported successfully"
+        setSuccess(
+          "Inventory imported successfully."
         );
+
+        setClientName(
+          ""
+        );
+
+        setDlcNo("");
+
+        setDlcDate("");
 
         setExcelFile(
           null
@@ -178,19 +191,17 @@ function AddItem() {
           []
         );
 
-        setZipFile(
-          null
-        );
+        setTimeout(() => {
+          navigate(
+            "/inventory"
+          );
 
-        navigate(
-          "/inventory"
-        );
-
-        window.location.reload();
+          window.location.reload();
+        }, 1200);
       } catch (error) {
         console.log(error);
 
-        alert(
+        setError(
           error?.response
             ?.data?.error ||
             "Import failed"
@@ -206,6 +217,10 @@ function AddItem() {
         {/* HEADER */}
 
         <div className="mb-8">
+          <h1 className="text-4xl font-black text-[#102a43]">
+            Import Inventory
+          </h1>
+
           <p className="text-[#6b7280] mt-2">
             Upload inventory
             Excel file with
@@ -213,21 +228,108 @@ function AddItem() {
           </p>
         </div>
 
-        {/* IMPORT BOX */}
+        {/* BOX */}
 
         <div className="bg-white border border-[#dfe5ea] rounded-[32px] p-6 md:p-8 shadow-sm">
-          <div className="border-2 border-dashed border-[#cbd5df] rounded-[28px] p-8 md:p-14 text-center bg-[#f8fafb]">
-            <div className="max-w-xl mx-auto">
-              {/* EXCEL */}
+          <div className="border-2 border-dashed border-[#cbd5df] rounded-[28px] p-8 md:p-14 bg-[#f8fafb]">
+            {/* ERROR */}
 
+            {error && (
+              <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-5 py-4 rounded-2xl font-semibold">
+                {error}
+              </div>
+            )}
+
+            {/* SUCCESS */}
+
+            {success && (
+              <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-2xl font-semibold">
+                {success}
+              </div>
+            )}
+
+            {/* FORM */}
+
+            <div className="grid md:grid-cols-3 gap-5">
+              {/* CLIENT */}
+
+              <div>
+                <label className="block text-sm font-bold text-[#31475a] mb-2">
+                  Client Name
+                </label>
+
+                <input
+                  type="text"
+                  value={
+                    clientName
+                  }
+                  onChange={(
+                    e
+                  ) =>
+                    setClientName(
+                      e.target
+                        .value
+                    )
+                  }
+                  placeholder="Enter client name"
+                  className="w-full bg-white border border-[#dfe5ea] px-5 py-4 rounded-[18px] text-[#31475a] outline-none"
+                />
+              </div>
+
+              {/* DLC */}
+
+              <div>
+                <label className="block text-sm font-bold text-[#31475a] mb-2">
+                  DLC No
+                </label>
+
+                <input
+                  type="text"
+                  value={dlcNo}
+                  onChange={(
+                    e
+                  ) =>
+                    setDlcNo(
+                      e.target
+                        .value
+                    )
+                  }
+                  placeholder="Enter DLC number"
+                  className="w-full bg-white border border-[#dfe5ea] px-5 py-4 rounded-[18px] text-[#31475a] outline-none"
+                />
+              </div>
+
+              {/* DATE */}
+
+              <div>
+                <label className="block text-sm font-bold text-[#31475a] mb-2">
+                  DLC Date
+                </label>
+
+                <input
+                  type="date"
+                  value={
+                    dlcDate
+                  }
+                  onChange={(
+                    e
+                  ) =>
+                    setDlcDate(
+                      e.target
+                        .value
+                    )
+                  }
+                  className="w-full bg-white border border-[#dfe5ea] px-5 py-4 rounded-[18px] text-[#31475a] outline-none"
+                />
+              </div>
+            </div>
+
+            {/* EXCEL */}
+
+            <div className="mt-10">
               <h2 className="text-2xl font-black text-[#31475a]">
                 Upload Excel File
               </h2>
-
-              <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
-                Drag & drop or
-                select Excel file
-              </p>
 
               <div
                 onDragOver={(
@@ -261,13 +363,13 @@ function AddItem() {
                         .files[0]
                     )
                   }
-                  className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px] text-[#52606d]"
+                  className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px]"
                 />
               </div>
 
               {excelFile && (
                 <div className="mt-4 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
-                  <p className="text-[#31475a] font-bold truncate">
+                  <p className="font-bold text-[#31475a] truncate">
                     {
                       excelFile.name
                     }
@@ -275,205 +377,153 @@ function AddItem() {
                 </div>
               )}
 
-              {/* IMAGES */}
+              {/* DOWNLOAD FORMAT */}
 
-              <div className="mt-10">
-                <h2 className="text-2xl font-black text-[#31475a]">
-                  Upload Images
-                </h2>
+              <a
+                href="/sample_inventory_format.xlsx"
+                download
+                className="inline-block mt-5 bg-[#eef2f6] hover:bg-[#e3e8ee] text-[#31475a] px-6 py-3 rounded-2xl font-bold transition"
+              >
+                Download Sample
+                Format
+              </a>
+            </div>
 
-                <p className="text-[#7b8794] mt-3 text-sm leading-relaxed">
-                  Upload multiple
-                  images OR ZIP
-                  file
+            {/* IMAGES */}
+
+            <div className="mt-12">
+              <h2 className="text-2xl font-black text-[#31475a]">
+                Upload Images
+              </h2>
+
+              <div
+                onDragOver={(
+                  e
+                ) =>
+                  e.preventDefault()
+                }
+                onDrop={
+                  handleImageDrop
+                }
+                className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
+              >
+                <p className="text-[#52606d] font-semibold">
+                  Drag & Drop
+                  Images Here
                 </p>
 
-                {/* IMAGE DROP */}
+                <p className="text-sm text-[#7b8794] mt-2">
+                  JPG, JPEG &
+                  PNG supported
+                </p>
 
-                <div
-                  onDragOver={(
+                <input
+                  type="file"
+                  multiple
+                  accept=".jpg,.jpeg,.png"
+                  onChange={(
                     e
                   ) =>
-                    e.preventDefault()
+                    handleImageSelect(
+                      e.target
+                        .files
+                    )
                   }
-                  onDrop={
-                    handleImageDrop
-                  }
-                  className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
-                >
-                  <p className="text-[#52606d] font-semibold">
-                    Drag & Drop
-                    Images Here
-                  </p>
-
-                  <p className="text-sm text-[#7b8794] mt-2">
-                    JPG, JPEG,
-                    PNG supported
-                  </p>
-
-                  <input
-                    type="file"
-                    multiple
-                    accept=".jpg,.jpeg,.png"
-                    onChange={(
-                      e
-                    ) =>
-                      handleImageSelect(
-                        e.target
-                          .files
-                      )
-                    }
-                    className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px] text-[#52606d]"
-                  />
-                </div>
-
-                {/* ZIP */}
-
-                <div
-                  onDragOver={(
-                    e
-                  ) =>
-                    e.preventDefault()
-                  }
-                  onDrop={
-                    handleZipDrop
-                  }
-                  className="mt-6 border-2 border-dashed border-[#cbd5df] bg-white rounded-[24px] p-8 text-center"
-                >
-                  <p className="text-[#52606d] font-semibold">
-                    Drag & Drop ZIP
-                    Here
-                  </p>
-
-                  <p className="text-sm text-[#7b8794] mt-2">
-                    ZIP upload also
-                    supported
-                  </p>
-
-                  <input
-                    type="file"
-                    accept=".zip"
-                    onChange={(
-                      e
-                    ) =>
-                      setZipFile(
-                        e.target
-                          .files[0]
-                      )
-                    }
-                    className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px] text-[#52606d]"
-                  />
-                </div>
-
-                {/* IMAGE FILES */}
-
-                {imageFiles.length >
-                  0 && (
-                  <div className="mt-5 bg-white border border-[#dfe5ea] rounded-[18px] p-4 text-left max-h-[220px] overflow-y-auto">
-                    <p className="font-black text-[#31475a] mb-3">
-                      Selected
-                      Images (
-                      {
-                        imageFiles.length
-                      }
-                      )
-                    </p>
-
-                    <div className="space-y-2">
-                      {imageFiles.map(
-                        (
-                          file,
-                          index
-                        ) => (
-                          <div
-                            key={
-                              index
-                            }
-                            className="text-sm text-[#52606d] truncate"
-                          >
-                            •{" "}
-                            {
-                              file.name
-                            }
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* ZIP FILE */}
-
-                {zipFile && (
-                  <div className="mt-5 bg-white border border-[#dfe5ea] rounded-[18px] px-5 py-4">
-                    <p className="text-[#31475a] font-bold truncate">
-                      ZIP:{" "}
-                      {
-                        zipFile.name
-                      }
-                    </p>
-                  </div>
-                )}
+                  className="mt-6 w-full bg-[#f8fafb] border border-[#dfe5ea] p-4 rounded-[18px]"
+                />
               </div>
 
-              {/* BUTTON */}
+              {/* IMAGE LIST */}
 
-              <button
-                onClick={
-                  handleImport
-                }
-                disabled={
-                  loading
-                }
-                className="mt-10 w-full md:w-auto bg-[#31475a] hover:bg-[#3d556b] text-white px-10 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
-              >
-                {loading
-                  ? "Importing Inventory..."
-                  : "Import Inventory"}
-              </button>
+              {imageFiles.length >
+                0 && (
+                <div className="mt-5 bg-white border border-[#dfe5ea] rounded-[18px] p-4 text-left max-h-[220px] overflow-y-auto">
+                  <p className="font-black text-[#31475a] mb-3">
+                    Selected
+                    Images (
+                    {
+                      imageFiles.length
+                    }
+                    )
+                  </p>
 
-              {/* NOTES */}
+                  <div className="space-y-2">
+                    {imageFiles.map(
+                      (
+                        file,
+                        index
+                      ) => (
+                        <div
+                          key={
+                            index
+                          }
+                          className="text-sm text-[#52606d] truncate"
+                        >
+                          •{" "}
+                          {
+                            file.name
+                          }
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
-              <div className="mt-10 bg-white border border-[#dfe5ea] rounded-[20px] p-5 text-left">
-                <h3 className="font-bold text-[#31475a] mb-3">
-                  Important Notes
-                </h3>
+            {/* BUTTON */}
 
-                <ul className="text-sm text-[#52606d] space-y-2 list-disc pl-5">
-                  <li>
-                    Image names
-                    must exactly
-                    match SKU
-                    numbers
-                  </li>
+            <button
+              onClick={
+                handleImport
+              }
+              disabled={
+                loading
+              }
+              className="mt-10 w-full md:w-auto bg-[#31475a] hover:bg-[#3d556b] text-white px-10 py-4 rounded-2xl font-bold transition-all duration-300 shadow-md"
+            >
+              {loading
+                ? "Importing Inventory..."
+                : "Import Inventory"}
+            </button>
 
-                  <li>
-                    Example:
-                    SKU123.jpg
-                  </li>
+            {/* NOTES */}
 
-                  <li>
-                    Multiple image
-                    upload supported
-                  </li>
+            <div className="mt-10 bg-white border border-[#dfe5ea] rounded-[20px] p-5 text-left">
+              <h3 className="font-bold text-[#31475a] mb-3">
+                Important Notes
+              </h3>
 
-                  <li>
-                    ZIP upload
-                    supported
-                  </li>
+              <ul className="text-sm text-[#52606d] space-y-2 list-disc pl-5">
+                <li>
+                  Image names
+                  must exactly
+                  match SKU
+                  numbers
+                </li>
 
-                  <li>
-                    Drag & drop
-                    supported
-                  </li>
+                <li>
+                  Example:
+                  SKU123.jpg
+                </li>
 
-                  <li>
-                    Supported image
-                    formats: JPG,
-                    JPEG, PNG
-                  </li>
-                </ul>
-              </div>
+                <li>
+                  Multiple image
+                  upload supported
+                </li>
+
+                <li>
+                  Excel format
+                  must match
+                  provided sample
+                </li>
+
+                <li>
+                  Supported image
+                  formats: JPG,
+                  JPEG, PNG
+                </li>
+              </ul>
             </div>
           </div>
         </div>

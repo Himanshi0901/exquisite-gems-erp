@@ -1,12 +1,22 @@
 require("dotenv").config();
 
-const express = require("express");
-const multer = require("multer");
-const XLSX = require("xlsx");
-const fs = require("fs");
-const path = require("path");
-const mime = require("mime-types");
-const AdmZip = require("adm-zip");
+const express =
+  require("express");
+
+const multer =
+  require("multer");
+
+const XLSX =
+  require("xlsx");
+
+const fs =
+  require("fs");
+
+const path =
+  require("path");
+
+const mime =
+  require("mime-types");
 
 const {
   createClient,
@@ -18,14 +28,17 @@ const Jewellery =
 const router =
   express.Router();
 
-const upload = multer({
-  dest: "temp/",
-});
+const upload =
+  multer({
+    dest: "temp/",
+  });
 
 const supabase =
   createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY
+    process.env
+      .SUPABASE_URL,
+    process.env
+      .SUPABASE_KEY
   );
 
 router.post(
@@ -34,11 +47,6 @@ router.post(
   upload.fields([
     {
       name: "excel",
-      maxCount: 1,
-    },
-
-    {
-      name: "zip",
       maxCount: 1,
     },
 
@@ -55,15 +63,31 @@ router.post(
           "excel"
         ]?.[0];
 
-      const zipFile =
-        req.files[
-          "zip"
-        ]?.[0];
-
       const imageFiles =
         req.files[
           "images"
         ] || [];
+
+      const {
+        clientName,
+        dlcNo,
+        dlcDate,
+      } = req.body;
+
+      /* REQUIRED VALIDATION */
+
+      if (
+        !clientName ||
+        !dlcNo ||
+        !dlcDate
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Client Name, DLC No and DLC Date are required",
+          });
+      }
 
       if (!excelFile) {
         return res
@@ -74,66 +98,17 @@ router.post(
           });
       }
 
-      /* ---------------- DLC DETAILS FROM FILE NAME ---------------- */
-
-      const originalName =
-        path.parse(
-          excelFile.originalname
-        ).name;
-
-      /* DATE */
-
-      const dateMatch =
-        originalName.match(
-          /\d{2}-\d{2}-\d{4}/
-        );
-
-      const dlcDate =
-        dateMatch
-          ? new Date(
-              dateMatch[0]
-                .split("-")
-                .reverse()
-                .join("-")
-            )
-          : new Date();
-
-      /* REMOVE DATE */
-
-      const withoutDate =
-        originalName
-          .replace(
-            dateMatch?.[0] ||
-              "",
-            ""
-          )
-          .trim();
-
-      /* DLC NO */
-
-      const dlcNoMatch =
-        withoutDate.match(
-          /^([A-Z0-9-]+)/
-        );
-
-      const dlcNo =
-        dlcNoMatch
-          ? dlcNoMatch[0]
-          : "";
-
-      /* CLIENT NAME */
-
-      const clientName =
-        withoutDate
-          .replace(
-            dlcNo,
-            ""
-          )
-          .replace(
-            /\.+/g,
-            ""
-          )
-          .trim();
+      if (
+        imageFiles.length ===
+        0
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Images are required",
+          });
+      }
 
       /* EXPIRY DATE */
 
@@ -147,13 +122,7 @@ router.post(
           6
       );
 
-      console.log({
-        dlcNo,
-        clientName,
-        dlcDate,
-      });
-
-      /* ---------------- READ EXCEL ---------------- */
+      /* READ EXCEL */
 
       const workbook =
         XLSX.readFile(
@@ -173,7 +142,78 @@ router.post(
           }
         );
 
-      /* ---------------- TEMP IMAGE FOLDER ---------------- */
+      if (
+        !data ||
+        data.length === 0
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Excel file is empty",
+          });
+      }
+
+      /* REQUIRED COLUMNS */
+
+      const requiredColumns =
+        [
+          "SrNo",
+          "SKU/St.No",
+          "Item",
+          "Metal",
+          "HSN",
+          "Pcs/Pair",
+          "Description",
+
+          "G-Wt",
+          "N-Wt",
+          "Mt Value",
+
+          "Diam Wt",
+          "Diam Value",
+
+          "CS Wt",
+          "CS Value",
+
+          "Oth Wt",
+          "Oth Val",
+
+          "Labour & Value Addition",
+
+          "Amount",
+
+          "Image",
+        ];
+
+      const headers =
+        Object.keys(
+          data[0]
+        ).map((h) =>
+          h.trim()
+        );
+
+      const missingColumns =
+        requiredColumns.filter(
+          (col) =>
+            !headers.includes(
+              col
+            )
+        );
+
+      if (
+        missingColumns.length >
+        0
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Invalid Excel Format. Please use sample format.",
+          });
+      }
+
+      /* TEMP IMAGE FOLDER */
 
       const extractPath =
         path.join(
@@ -194,21 +234,7 @@ router.post(
         );
       }
 
-      /* ---------------- ZIP EXTRACTION ---------------- */
-
-      if (zipFile) {
-        const zip =
-          new AdmZip(
-            zipFile.path
-          );
-
-        zip.extractAllTo(
-          extractPath,
-          true
-        );
-      }
-
-      /* ---------------- MANUAL IMAGE COPY ---------------- */
+      /* COPY IMAGES */
 
       for (const image of imageFiles) {
         const targetPath =
@@ -223,14 +249,7 @@ router.post(
         );
       }
 
-      console.log(
-        "HEADERS:",
-        Object.keys(
-          data[0] || {}
-        )
-      );
-
-      /* ---------------- EXISTING SKU CACHE ---------------- */
+      /* EXISTING SKU CACHE */
 
       const existingItems =
         await Jewellery.findAll(
@@ -249,7 +268,7 @@ router.post(
           )
         );
 
-      /* ---------------- IMPORT LOOP ---------------- */
+      /* IMPORT LOOP */
 
       for (const row of data) {
         const cleanedRow =
@@ -266,7 +285,7 @@ router.post(
           }
         );
 
-        /* ---------------- SKIP TOTAL ROW ---------------- */
+        /* SKIP TOTAL ROW */
 
         const skuValue =
           cleanedRow[
@@ -286,7 +305,7 @@ router.post(
           continue;
         }
 
-        /* ---------------- DUPLICATE CHECK ---------------- */
+        /* DUPLICATE SKU */
 
         if (
           existingSkuSet.has(
@@ -340,7 +359,7 @@ router.post(
           }
         }
 
-        /* ---------------- IMAGE UPLOAD ---------------- */
+        /* IMAGE UPLOAD */
 
         if (
           foundImage
@@ -393,19 +412,10 @@ router.post(
 
             imageUrl =
               publicUrlData.publicUrl;
-          } else {
-            console.log(
-              "SUPABASE ERROR:",
-              error
-            );
           }
-        } else {
-          console.log(
-            `Image not found for SKU: ${sku}`
-          );
         }
 
-        /* ---------------- SAVE ---------------- */
+        /* SAVE */
 
         await Jewellery.create({
           srNo:
@@ -540,7 +550,7 @@ router.post(
         });
       }
 
-      /* ---------------- CLEANUP ---------------- */
+      /* CLEANUP */
 
       fs.rmSync(
         extractPath,
@@ -558,17 +568,6 @@ router.post(
       ) {
         fs.unlinkSync(
           excelFile.path
-        );
-      }
-
-      if (
-        zipFile?.path &&
-        fs.existsSync(
-          zipFile.path
-        )
-      ) {
-        fs.unlinkSync(
-          zipFile.path
         );
       }
 
@@ -591,13 +590,7 @@ router.post(
           "Import Successful",
       });
     } catch (error) {
-      console.log(
-        "FULL IMPORT ERROR:"
-      );
-
-      console.log(
-        error
-      );
+      console.log(error);
 
       res.status(500).json({
         error:
