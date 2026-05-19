@@ -1,50 +1,16 @@
 import {
-  useContext,
-  useMemo,
   useState,
-  useEffect,
 } from "react";
 
-import toast from "react-hot-toast";
+import JewelleryDrawer from "./JewelleryDrawer";
 
-import * as XLSX from "xlsx";
-
-import { saveAs } from "file-saver";
-
-import MainLayout from "../layouts/MainLayout";
-
-import InventoryTable from "../components/InventoryTable";
-
-import InventoryTableView from "../components/InventoryTableView";
-
-import { InventoryContext } from "../context/InventoryContext";
-
-function Inventory() {
-  const { items } =
-    useContext(
-      InventoryContext
-    );
-
-  const [viewMode, setViewMode] =
-    useState("grid");
-
-  const [search, setSearch] =
-    useState("");
-
-  const [statusFilter, setStatusFilter] =
-    useState("ALL");
-
-  const [itemFilter, setItemFilter] =
-    useState("ALL");
-
-  const [clientFilter, setClientFilter] =
-    useState("ALL");
-
-  const [dlcFilter, setDlcFilter] =
-    useState("ALL");
-
-  const [sortBy, setSortBy] =
-    useState("latest");
+function InventoryTable({
+  items,
+}) {
+  const [
+    selectedItem,
+    setSelectedItem,
+  ] = useState(null);
 
   const formatWeight = (
     value
@@ -66,596 +32,263 @@ function Inventory() {
       }
     );
 
-  /* ALERTS */
+  const getRemainingDays = (
+    expiryDate
+  ) => {
+    if (!expiryDate)
+      return null;
 
-  useEffect(() => {
-    const criticalItems =
-      items.filter((item) => {
-        if (
-          !item.expiryDate ||
-          item.status === "SOLD"
-        )
-          return false;
-
-        const expiry =
-          new Date(
-            item.expiryDate
-          );
-
-        const today =
-          new Date();
-
-        const diff =
-          expiry - today;
-
-        const days =
-          Math.ceil(
-            diff /
-              (1000 *
-                60 *
-                60 *
-                24)
-          );
-
-        return (
-          days <= 15 &&
-          days > 0
-        );
-      });
-
-    criticalItems.forEach(
-      (item) => {
-        const expiry =
-          new Date(
-            item.expiryDate
-          );
-
-        const today =
-          new Date();
-
-        const diff =
-          expiry - today;
-
-        const days =
-          Math.ceil(
-            diff /
-              (1000 *
-                60 *
-                60 *
-                24)
-          );
-
-        toast(
-          `${item.dlcNo} is due to return to India in ${days} days`,
-          {
-            duration: 8000,
-
-            icon: "⚠️",
-          }
-        );
-      }
-    );
-  }, [items]);
-
-  const uniqueClients =
-    [
-      ...new Set(
-        items
-          .map(
-            (item) =>
-              item.clientName
-          )
-          .filter(Boolean)
-      ),
-    ];
-
-  const uniqueDlc =
-    [
-      ...new Set(
-        items
-          .map(
-            (item) =>
-              item.dlcNo
-          )
-          .filter(Boolean)
-      ),
-    ];
-
-  const filteredItems =
-    useMemo(() => {
-      let filtered =
-        items.filter(
-          (item) => {
-            const matchesSearch =
-              [
-                item.skuStNo,
-                item.item,
-                item.metal,
-                item.status,
-                item.clientName,
-                item.dlcNo,
-              ]
-                .join(" ")
-                .toLowerCase()
-                .includes(
-                  search.toLowerCase()
-                );
-
-            const matchesStatus =
-              statusFilter ===
-                "ALL" ||
-              item.status ===
-                statusFilter;
-
-            const matchesItem =
-              itemFilter ===
-                "ALL" ||
-              item.item
-                ?.toUpperCase()
-                .trim() ===
-                itemFilter;
-
-            const matchesClient =
-              clientFilter ===
-                "ALL" ||
-              item.clientName ===
-                clientFilter;
-
-            const matchesDlc =
-              dlcFilter ===
-                "ALL" ||
-              item.dlcNo ===
-                dlcFilter;
-
-            return (
-              matchesSearch &&
-              matchesStatus &&
-              matchesItem &&
-              matchesClient &&
-              matchesDlc
-            );
-          }
-        );
-
-      if (
-        sortBy ===
-        "priceHigh"
-      ) {
-        filtered.sort(
-          (a, b) =>
-            Number(
-              b.amount
-            ) -
-            Number(
-              a.amount
-            )
-        );
-      }
-
-      if (
-        sortBy ===
-        "priceLow"
-      ) {
-        filtered.sort(
-          (a, b) =>
-            Number(
-              a.amount
-            ) -
-            Number(
-              b.amount
-            )
-        );
-      }
-
-      if (
-        sortBy ===
-        "weightHigh"
-      ) {
-        filtered.sort(
-          (a, b) =>
-            Number(
-              b.netWeight
-            ) -
-            Number(
-              a.netWeight
-            )
-        );
-      }
-
-      return filtered;
-    }, [
-      items,
-      search,
-      statusFilter,
-      itemFilter,
-      clientFilter,
-      dlcFilter,
-      sortBy,
-    ]);
-
-  const exportToExcel =
-    () => {
-      const exportData =
-        filteredItems.map(
-          (item) => ({
-            SKU:
-              item.skuStNo,
-
-            Item:
-              item.item,
-
-            Client:
-              item.clientName,
-
-            "DLC No":
-              item.dlcNo,
-
-            Metal:
-              item.metal,
-
-            PCS:
-              item.pcs,
-
-            "Gross Weight":
-              formatWeight(
-                item.grossWeight
-              ),
-
-            "Net Weight":
-              formatWeight(
-                item.netWeight
-              ),
-
-            "Diamond Weight":
-              formatWeight(
-                item.diamondWeight
-              ),
-
-            "Diamond Value":
-              formatPrice(
-                item.diamondValue
-              ),
-
-            "CS Weight":
-              formatWeight(
-                item.csWeight
-              ),
-
-            "CS Value":
-              formatPrice(
-                item.csValue
-              ),
-
-            Labour:
-              formatPrice(
-                item.labourValue
-              ),
-
-            Amount:
-              formatPrice(
-                item.amount
-              ),
-
-            Status:
-              item.status,
-
-            Description:
-              item.description,
-
-            "Sent Date":
-              item.sentDate
-                ? new Date(
-                    item.sentDate
-                  ).toLocaleDateString()
-                : "-",
-
-            "Expiry Date":
-              item.expiryDate
-                ? new Date(
-                    item.expiryDate
-                  ).toLocaleDateString()
-                : "-",
-
-            "Sold Date":
-              item.soldDate
-                ? new Date(
-                    item.soldDate
-                  ).toLocaleDateString()
-                : "-",
-
-            "Image Link":
-              item.image || "",
-          })
-        );
-
-      const worksheet =
-        XLSX.utils.json_to_sheet(
-          exportData
-        );
-
-      /* CLICKABLE IMAGE LINKS */
-
-      filteredItems.forEach(
-        (item, index) => {
-          if (item.image) {
-            const cellAddress =
-              `T${index + 2}`;
-
-            worksheet[
-              cellAddress
-            ] = {
-              t: "s",
-
-              v: "Open Image",
-
-              l: {
-                Target:
-                  item.image,
-              },
-            };
-          }
-        }
+    const expiry =
+      new Date(
+        expiryDate
       );
 
-      worksheet["!cols"] = [
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 24 },
-        { wch: 18 },
-        { wch: 14 },
-        { wch: 10 },
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 14 },
-        { wch: 14 },
-        { wch: 14 },
-        { wch: 20 },
-      ];
+    const today =
+      new Date();
 
-      const workbook =
-        XLSX.utils.book_new();
+    const diff =
+      expiry - today;
 
-      XLSX.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        "Inventory"
+    const days =
+      Math.ceil(
+        diff /
+          (1000 *
+            60 *
+            60 *
+            24)
       );
 
-      const excelBuffer =
-        XLSX.write(
-          workbook,
-          {
-            bookType:
-              "xlsx",
+    if (days <= 0) {
+      return {
+        text: "Expired",
+        type: "expired",
+      };
+    }
 
-            type: "array",
-          }
-        );
+    if (days <= 30) {
+      return {
+        text: `${days} Days Left`,
+        type: "warning",
+      };
+    }
 
-      const data =
-        new Blob(
-          [excelBuffer],
-          {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-          }
-        );
-
-      saveAs(
-        data,
-        `inventory_export_${Date.now()}.xlsx`
-      );
+    return {
+      text: `${days} Days Left`,
+      type: "safe",
     };
-
-  if (!items.length) {
-    return (
-      <MainLayout>
-        <div className="flex items-center justify-center h-[60vh] text-[#52606d] text-lg font-semibold">
-          Loading inventory...
-        </div>
-      </MainLayout>
-    );
-  }
+  };
 
   return (
-    <MainLayout>
-      <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-[2.2fr_1fr_1fr_1fr_1fr_1fr_auto_auto] gap-2 md:gap-3 items-center">
-          <input
-            type="text"
-            placeholder="Search SKU, client, DLC..."
-            value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
-            className="col-span-2 bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-4 py-2.5 outline-none text-sm"
-          />
+    <>
+      <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
+        {items.map((item) => {
+          const remaining =
+            getRemainingDays(
+              item.expiryDate
+            );
 
-          <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] p-1 w-full">
-            <button
+          return (
+            <div
+              key={item.id}
               onClick={() =>
-                setViewMode(
-                  "grid"
+                setSelectedItem(
+                  item
                 )
               }
-              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
-                
-                ${
-                  viewMode ===
-                  "grid"
-                    ? "bg-[#31475a] text-white"
-                    : "text-[#52606d]"
-                }
-              `}
+              className="bg-white rounded-[18px] border border-[#e5e7eb] overflow-hidden cursor-pointer hover:shadow-[0_8px_20px_rgba(0,0,0,0.05)] transition-all duration-300"
             >
-              Grid
-            </button>
+              {/* IMAGE */}
 
-            <button
-              onClick={() =>
-                setViewMode(
-                  "table"
-                )
-              }
-              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
-                
-                ${
-                  viewMode ===
-                  "table"
-                    ? "bg-[#31475a] text-white"
-                    : "text-[#52606d]"
-                }
-              `}
-            >
-              Table
-            </button>
-          </div>
+              <div className="relative bg-[#fafafa] h-[220px] flex items-center justify-center overflow-hidden">
+                <img
+                  loading="lazy"
+                  src={
+                    item.image ||
+                    "https://via.placeholder.com/400"
+                  }
+                  alt={item.item}
+                  className="w-full h-full object-contain p-3 hover:scale-105 transition duration-500"
+                />
 
-          <select
-            value={statusFilter}
-            onChange={(e) =>
-              setStatusFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All Status
-            </option>
+                {/* STATUS */}
 
-            <option value="IN_STOCK">
-              Available
-            </option>
-
-            <option value="SOLD">
-              Sold
-            </option>
-          </select>
-
-          <select
-            value={itemFilter}
-            onChange={(e) =>
-              setItemFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All Jewellery
-            </option>
-
-            <option value="NECKLACE">
-              Necklace
-            </option>
-
-            <option value="RING">
-              Ring
-            </option>
-
-            <option value="EARRING">
-              Earring
-            </option>
-
-            <option value="BANGLE">
-              Bangle
-            </option>
-          </select>
-
-          <select
-            value={clientFilter}
-            onChange={(e) =>
-              setClientFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All Clients
-            </option>
-
-            {uniqueClients.map(
-              (client) => (
-                <option
-                  key={client}
-                  value={client}
+                <div
+                  className={`absolute top-2 left-2 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide shadow-sm
+                  
+                  ${
+                    item.status ===
+                    "SOLD"
+                      ? "bg-red-500 text-white"
+                      : "bg-green-500 text-white"
+                  }
+                `}
                 >
-                  {client}
-                </option>
-              )
-            )}
-          </select>
+                  {item.status ===
+                  "SOLD"
+                    ? "● SOLD"
+                    : "● AVAILABLE"}
+                </div>
+              </div>
 
-          <select
-            value={dlcFilter}
-            onChange={(e) =>
-              setDlcFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All DLC
-            </option>
+              {/* DETAILS */}
 
-            {uniqueDlc.map(
-              (dlc) => (
-                <option
-                  key={dlc}
-                  value={dlc}
-                >
-                  {dlc}
-                </option>
-              )
-            )}
-          </select>
+              <div className="p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h2 className="text-[15px] font-black leading-tight text-[#1f2933] truncate">
+                      {
+                        item.skuStNo
+                      }
+                    </h2>
 
-          <div className="flex items-center justify-end gap-2 flex-nowrap">
-            <button
-              onClick={
-                exportToExcel
-              }
-              className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all whitespace-nowrap"
-            >
-              Export Excel
-            </button>
+                    <p className="text-[#52606d] text-[10px] mt-1 uppercase tracking-wide truncate">
+                      {item.item}
+                    </p>
+                  </div>
 
-            <div className="flex items-center justify-center bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-4 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
-              {
-                filteredItems.length
-              }{" "}
-              Items
+                  <button className="text-[#9aa5b1] text-lg leading-none">
+                    ⋮
+                  </button>
+                </div>
+
+                {/* INFO */}
+
+                <div className="mt-2 flex items-center gap-2 text-[10px] text-[#52606d] flex-wrap">
+                  <span>
+                    {item.metal}
+                  </span>
+
+                  <span>
+                    •
+                  </span>
+
+                  <span>
+                    {formatWeight(
+                      item.netWeight
+                    )}
+                    g
+                  </span>
+
+                  <span>
+                    •
+                  </span>
+
+                  <span className="font-bold text-[#1f2933]">
+                    $
+                    {formatPrice(
+                      item.amount
+                    )}
+                  </span>
+                </div>
+
+                {/* CLIENT + DLC */}
+
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[10px] px-2 py-2">
+                    <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
+                      Client
+                    </p>
+
+                    <p className="text-[11px] font-bold text-[#334e68] truncate mt-1">
+                      {item.clientName ||
+                        "-"}
+                    </p>
+                  </div>
+
+                  <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[10px] px-2 py-2">
+                    <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
+                      DLC No.
+                    </p>
+
+                    <p className="text-[11px] font-bold text-[#334e68] truncate mt-1">
+                      {item.dlcNo ||
+                        "-"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* DATE + REMAINING */}
+
+                {item.status !==
+                "SOLD" && (
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {/* EXPIRY DATE */}
+
+                    <div className="bg-[#f8fafb] border border-[#eef2f5] rounded-[10px] px-3 py-2">
+                      <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
+                        Expiry Date
+                      </p>
+
+                      <p className="text-[11px] font-bold text-[#334e68] mt-1">
+                        {item.expiryDate
+                          ? new Date(
+                              item.expiryDate
+                            ).toLocaleDateString()
+                          : "-"}
+                      </p>
+                    </div>
+
+                    {/* DAYS LEFT */}
+
+                    {remaining && (
+                      <div
+                        className={`bg-[#f8fafb] border rounded-[10px] px-3 py-2
+                          
+                          ${
+                            remaining.type ===
+                            "expired"
+                              ? "border-red-200"
+
+                              : remaining.type ===
+                                "warning"
+                              ? "border-orange-200"
+
+                              : "border-blue-200"
+                          }
+                        `}
+                      >
+                        <p className="text-[8px] uppercase tracking-wide text-[#9aa5b1]">
+                          Days Left
+                        </p>
+
+                        <p
+                          className={`text-[11px] font-bold mt-1
+                            
+                            ${
+                              remaining.type ===
+                              "expired"
+                                ? "text-red-600"
+
+                                : remaining.type ===
+                                  "warning"
+                                ? "text-orange-600"
+
+                                : "text-blue-600"
+                            }
+                          `}
+                        >
+                          {
+                            remaining.text
+                          }
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {viewMode ===
-      "grid" ? (
-        <InventoryTable
-          items={
-            filteredItems
-          }
-        />
-      ) : (
-        <InventoryTableView
-          items={
-            filteredItems
-          }
-        />
-      )}
-    </MainLayout>
+      <JewelleryDrawer
+        item={selectedItem}
+        onClose={() =>
+          setSelectedItem(null)
+        }
+      />
+    </>
   );
 }
 
-export default Inventory;
+export default InventoryTable;
