@@ -223,8 +223,8 @@ function InventoryTableView({
 
                   {/* DESCRIPTION */}
 
-                  <td className="p-4 text-[#52606d] min-w-[300px]">
-                    <div className="break-words whitespace-normal">
+                  <td className="p-4 text-[#52606d] min-w-[180px] max-w-[220px]">
+                    <div className="break-words whitespace-normal leading-relaxed line-clamp-3 text-sm">
                       {item.description ||
                         "-"}
                     </div>
