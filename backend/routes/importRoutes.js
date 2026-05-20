@@ -276,6 +276,16 @@ router.post(
         );
       }
 
+      /* GET ALL EXISTING ITEMS ONCE */
+
+      const allExistingItems =
+        await Jewellery.findAll({
+          attributes: [
+            "skuStNo",
+            "image",
+          ],
+        });
+
       /* IMPORT LOOP */
 
       for (const row of data) {
@@ -327,24 +337,34 @@ router.post(
 
         /* CHECK EXISTING SKU IMAGE */
 
-        const existingImageItem =
-          await Jewellery.findOne(
-            {
-              where: {
-                skuStNo:
-                  cleanedRow[
-                    "SKU/St.No"
-                  ],
-              },
+        const matchedItem =
+          allExistingItems.find(
+            (item) => {
+              const existingSku =
+                String(
+                  item.skuStNo
+                )
+                  .split(
+                    "/"
+                  )[0]
+                  .trim();
+
+              return (
+                existingSku ===
+                  sku &&
+                item.image
+              );
             }
           );
 
         if (
-          existingImageItem?.image
+          matchedItem?.image
         ) {
           imageUrl =
-            existingImageItem.image;
+            matchedItem.image;
         }
+
+        /* FIND LOCAL IMAGE */
 
         const possibleExtensions =
           [
