@@ -137,19 +137,62 @@ router.post(
           sheetName
         ];
 
-      /* GET HEADERS */
+      /* AUTO DETECT HEADER ROW */
 
-      const rows =
+      const allRows =
         XLSX.utils.sheet_to_json(
           worksheet,
           {
             header: 1,
-            range: 12,
           }
         );
 
+      let headerRowIndex =
+        -1;
+
+      for (
+        let i = 0;
+        i <
+        allRows.length;
+        i++
+      ) {
+        const row =
+          allRows[i].map(
+            (cell) =>
+              String(cell)
+                .trim()
+          );
+
+        if (
+          row.includes(
+            "SKU/St.No"
+          )
+        ) {
+          headerRowIndex =
+            i;
+
+          break;
+        }
+      }
+
+      if (
+        headerRowIndex ===
+        -1
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Could not detect Excel header row.",
+          });
+      }
+
+      /* GET HEADERS */
+
       const headers =
-        rows[0].map((h) =>
+        allRows[
+          headerRowIndex
+        ].map((h) =>
           String(h)
             .replace(
               /\n/g,
@@ -172,7 +215,8 @@ router.post(
         XLSX.utils.sheet_to_json(
           worksheet,
           {
-            range: 12,
+            range:
+              headerRowIndex,
           }
         );
 
@@ -276,7 +320,7 @@ router.post(
         );
       }
 
-      /* GET ALL EXISTING ITEMS ONCE */
+      /* GET ALL EXISTING ITEMS */
 
       const allExistingItems =
         await Jewellery.findAll({
