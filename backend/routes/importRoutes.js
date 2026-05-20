@@ -359,6 +359,32 @@ router.post(
           ],
         });
 
+      /* SAFE NUMBER */
+
+      const safeNumber = (
+        value,
+        decimals = 2
+      ) => {
+        const num =
+          parseFloat(
+            value
+          );
+
+        if (
+          isNaN(num)
+        ) {
+          return Number(
+            0
+          ).toFixed(
+            decimals
+          );
+        }
+
+        return num.toFixed(
+          decimals
+        );
+      };
+
       /* IMPORT LOOP */
 
       for (const row of data) {
@@ -454,7 +480,7 @@ router.post(
             foundImage =
               imagePath;
 
-            break;
+              break;
           }
         }
 
@@ -560,81 +586,86 @@ router.post(
             ],
 
           grossWeight:
-            Number(
+            safeNumber(
               cleanedRow[
                 "G-Wt"
-              ] || 0
-            ).toFixed(3),
+              ],
+              3
+            ),
 
           netWeight:
-            Number(
+            safeNumber(
               cleanedRow[
                 "N-Wt"
-              ] || 0
-            ).toFixed(3),
+              ],
+              3
+            ),
 
           metalValue:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Mt Value"
-              ] || 0
-            ).toFixed(2),
+              ]
+            ),
 
           diamondWeight:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Diam Wt"
-              ] || 0
-            ).toFixed(3),
+              ],
+              3
+            ),
 
           diamondValue:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Diam Value"
-              ] || 0
-            ).toFixed(2),
+              ]
+            ),
 
           csWeight:
-            Number(
+            safeNumber(
               cleanedRow[
                 "CS Wt"
-              ] || 0
-            ).toFixed(3),
+              ],
+              3
+            ),
 
           csValue:
-            Number(
+            safeNumber(
               cleanedRow[
                 "CS Value"
-              ] || 0
-            ).toFixed(2),
+              ]
+            ),
 
           otherWeight:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Oth Wt"
-              ] || 0
-            ).toFixed(3),
+              ],
+              3
+            ),
 
           otherValue:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Oth Val"
-              ] || 0
-            ).toFixed(2),
+              ]
+            ),
 
           labourValue:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Labour & Value Addition"
-              ] || 0
-            ).toFixed(2),
+              ]
+            ),
 
           amount:
-            Number(
+            safeNumber(
               cleanedRow[
                 "Amount"
-              ] || 0
-            ).toFixed(2),
+              ]
+            ),
 
           image:
             imageUrl,
