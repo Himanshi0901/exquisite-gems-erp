@@ -132,11 +132,45 @@ router.post(
       const sheetName =
         workbook.SheetNames[0];
 
+      const worksheet =
+        workbook.Sheets[
+          sheetName
+        ];
+
+      /* GET HEADERS */
+
+      const rows =
+        XLSX.utils.sheet_to_json(
+          worksheet,
+          {
+            header: 1,
+            range: 12,
+          }
+        );
+
+      const headers =
+        rows[0].map((h) =>
+          String(h)
+            .replace(
+              /\n/g,
+              ""
+            )
+            .replace(
+              /\r/g,
+              ""
+            )
+            .replace(
+              /\s+/g,
+              " "
+            )
+            .trim()
+        );
+
+      /* GET DATA */
+
       const data =
         XLSX.utils.sheet_to_json(
-          workbook.Sheets[
-            sheetName
-          ],
+          worksheet,
           {
             range: 12,
           }
@@ -185,13 +219,6 @@ router.post(
 
           "Image",
         ];
-
-      const headers =
-        Object.keys(
-          data[0]
-        ).map((h) =>
-          h.trim()
-        );
 
       const missingColumns =
         requiredColumns.filter(
