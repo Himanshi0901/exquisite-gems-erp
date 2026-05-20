@@ -211,50 +211,43 @@ router.post(
 
       /* GET DATA */
 
-      const data =
+      const rawData =
         XLSX.utils.sheet_to_json(
           worksheet,
           {
+            header: 1,
+
             range:
-              headerRowIndex,
+              headerRowIndex +
+              1,
 
             defval: "",
-
-            raw: false,
           }
-        ).map((row) => {
-          const cleaned =
-            {};
+        );
 
-          Object.keys(
-            row
-          ).forEach(
-            (key) => {
-              const cleanKey =
-                String(key)
-                  .replace(
-                    /\n/g,
-                    ""
-                  )
-                  .replace(
-                    /\r/g,
-                    ""
-                  )
-                  .replace(
-                    /\s+/g,
-                    " "
-                  )
-                  .trim();
+      const data =
+        rawData.map(
+          (rowArray) => {
+            const rowObj =
+              {};
 
-              cleaned[
-                cleanKey
-              ] =
-                row[key];
-            }
-          );
+            headers.forEach(
+              (
+                header,
+                index
+              ) => {
+                rowObj[
+                  header
+                ] =
+                  rowArray[
+                    index
+                  ];
+              }
+            );
 
-          return cleaned;
-        });
+            return rowObj;
+          }
+        );
 
       if (
         !data ||
