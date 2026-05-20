@@ -219,7 +219,7 @@ router.post(
 
             range:
               headerRowIndex +
-              1,
+              2,
 
             defval: "",
           }
