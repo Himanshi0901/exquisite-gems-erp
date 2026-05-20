@@ -735,9 +735,18 @@ function Inventory() {
             </button>
 
             <button
-              onClick={
-                exportToExcel
-              }
+              onClick={() => {
+                const confirmed =
+                  window.confirm(
+                    "Are you sure you want to export the current inventory data?"
+                  );
+
+                if (
+                  confirmed
+                ) {
+                  exportToExcel();
+                }
+              }}
               className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all whitespace-nowrap"
             >
               Export Excel
