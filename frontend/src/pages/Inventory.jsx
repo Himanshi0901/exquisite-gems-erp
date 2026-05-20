@@ -46,6 +46,11 @@ function Inventory() {
   const [sortBy, setSortBy] =
     useState("latest");
 
+  const [
+    showExportConfirm,
+    setShowExportConfirm,
+  ] = useState(false);
+
   const formatWeight = (
     value
   ) =>
@@ -485,45 +490,6 @@ function Inventory() {
         }
       );
 
-      worksheet["!cols"] = [
-        { wch: 10 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 14 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 12 },
-        { wch: 12 },
-        { wch: 30 },
-
-        { wch: 14 },
-        { wch: 14 },
-
-        { wch: 16 },
-
-        { wch: 14 },
-        { wch: 16 },
-
-        { wch: 14 },
-        { wch: 16 },
-
-        { wch: 14 },
-        { wch: 16 },
-
-        { wch: 24 },
-
-        { wch: 18 },
-
-        { wch: 16 },
-        { wch: 16 },
-        { wch: 16 },
-
-        { wch: 16 },
-        { wch: 14 },
-
-        { wch: 18 },
-      ];
-
       const workbook =
         XLSX.utils.book_new();
 
@@ -584,146 +550,6 @@ function Inventory() {
             className="col-span-2 bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-4 py-2.5 outline-none text-sm"
           />
 
-          <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] p-1 w-full">
-            <button
-              onClick={() =>
-                setViewMode(
-                  "grid"
-                )
-              }
-              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
-                ${
-                  viewMode ===
-                  "grid"
-                    ? "bg-[#31475a] text-white"
-                    : "text-[#52606d]"
-                }
-              `}
-            >
-              Grid
-            </button>
-
-            <button
-              onClick={() =>
-                setViewMode(
-                  "table"
-                )
-              }
-              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition
-                ${
-                  viewMode ===
-                  "table"
-                    ? "bg-[#31475a] text-white"
-                    : "text-[#52606d]"
-                }
-              `}
-            >
-              Table
-            </button>
-          </div>
-
-          <select
-            value={statusFilter}
-            onChange={(e) =>
-              setStatusFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All Status
-            </option>
-
-            <option value="IN_STOCK">
-              Available
-            </option>
-
-            <option value="SOLD">
-              Sold
-            </option>
-          </select>
-
-          <select
-            value={itemFilter}
-            onChange={(e) =>
-              setItemFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All Jewellery
-            </option>
-
-            <option value="NECKLACE">
-              Necklace
-            </option>
-
-            <option value="RING">
-              Ring
-            </option>
-
-            <option value="EARRING">
-              Earring
-            </option>
-
-            <option value="BANGLE">
-              Bangle
-            </option>
-          </select>
-
-          <select
-            value={clientFilter}
-            onChange={(e) =>
-              setClientFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All Clients
-            </option>
-
-            {uniqueClients.map(
-              (client) => (
-                <option
-                  key={client}
-                  value={client}
-                >
-                  {client}
-                </option>
-              )
-            )}
-          </select>
-
-          <select
-            value={dlcFilter}
-            onChange={(e) =>
-              setDlcFilter(
-                e.target.value
-              )
-            }
-            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
-          >
-            <option value="ALL">
-              All DLC
-            </option>
-
-            {uniqueDlc.map(
-              (dlc) => (
-                <option
-                  key={dlc}
-                  value={dlc}
-                >
-                  {dlc}
-                </option>
-              )
-            )}
-          </select>
-
           <div className="flex items-center justify-end gap-2 flex-nowrap">
             <button
               onClick={
@@ -735,29 +561,15 @@ function Inventory() {
             </button>
 
             <button
-              onClick={() => {
-                const confirmed =
-                  window.confirm(
-                    "Are you sure you want to export the current inventory data?"
-                  );
-
-                if (
-                  confirmed
-                ) {
-                  exportToExcel();
-                }
-              }}
+              onClick={() =>
+                setShowExportConfirm(
+                  true
+                )
+              }
               className="bg-[#31475a] hover:bg-[#3d556b] text-white px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all whitespace-nowrap"
             >
               Export Excel
             </button>
-
-            <div className="flex items-center justify-center bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-4 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
-              {
-                filteredItems.length
-              }{" "}
-              Items
-            </div>
           </div>
         </div>
       </div>
@@ -775,6 +587,46 @@ function Inventory() {
             filteredItems
           }
         />
+      )}
+
+      {showExportConfirm && (
+        <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-[420px] rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.18)] p-6">
+            <h2 className="text-[24px] font-black text-[#1f2933]">
+              Export Inventory
+            </h2>
+
+            <p className="mt-3 text-[#52606d] leading-relaxed">
+              Are you sure you want to export the current filtered inventory data?
+            </p>
+
+            <div className="flex items-center gap-3 mt-6">
+              <button
+                onClick={() =>
+                  setShowExportConfirm(
+                    false
+                  )
+                }
+                className="flex-1 py-3 rounded-[16px] border border-[#dfe5ea] text-[#52606d] font-semibold hover:bg-[#f8fafb]"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  exportToExcel();
+
+                  setShowExportConfirm(
+                    false
+                  );
+                }}
+                className="flex-1 py-3 rounded-[16px] bg-[#31475a] hover:bg-[#3d556b] text-white font-bold transition"
+              >
+                Export
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </MainLayout>
   );
