@@ -71,8 +71,6 @@ function Inventory() {
       }
     );
 
-  /* ALERTS */
-
   useEffect(() => {
     const criticalItems =
       items.filter((item) => {
@@ -279,8 +277,6 @@ function Inventory() {
       sortBy,
     ]);
 
-  /* RESET FILTERS */
-
   const resetFilters =
     () => {
       setSearch("");
@@ -314,146 +310,52 @@ function Inventory() {
     () => {
       const exportData =
         filteredItems.map(
-          (item) => {
-            const today =
-              new Date();
+          (item) => ({
+            "Sr No":
+              item.srNo,
 
-            const expiry =
-              item.expiryDate
-                ? new Date(
-                    item.expiryDate
-                  )
-                : null;
+            "SKU/St.No":
+              item.skuStNo,
 
-            const remaining =
-              expiry
-                ? Math.ceil(
-                    (expiry -
-                      today) /
-                      (1000 *
-                        60 *
-                        60 *
-                        24)
-                  )
-                : "-";
+            Item:
+              item.item,
 
-            return {
-              "Sr No":
-                item.srNo,
+            Metal:
+              item.metal,
 
-              "SKU/St.No":
-                item.skuStNo,
+            HSN:
+              item.hsn,
 
-              Item:
-                item.item,
+            "Pcs/Pair":
+              item.pcs,
 
-              Metal:
-                item.metal,
+            Description:
+              item.description,
 
-              HSN:
-                item.hsn,
+            "G-Wt (Gms)":
+              formatWeight(
+                item.grossWeight
+              ),
 
-              "Pcs/Pair":
-                item.pcs,
+            "N-Wt (Gms)":
+              formatWeight(
+                item.netWeight
+              ),
 
-              Description:
-                item.description,
+            "Amount (US$)":
+              formatPrice(
+                item.amount
+              ),
 
-              "G-Wt (Gms)":
-                formatWeight(
-                  item.grossWeight
-                ),
+            Client:
+              item.clientName,
 
-              "N-Wt (Gms)":
-                formatWeight(
-                  item.netWeight
-                ),
+            "DLC No.":
+              item.dlcNo,
 
-              "Mt Value (US$)":
-                formatPrice(
-                  item.metalValue
-                ),
-
-              "Diam Wt (Cts)":
-                formatWeight(
-                  item.diamondWeight
-                ),
-
-              "Diam Value (US$)":
-                formatPrice(
-                  item.diamondValue
-                ),
-
-              "CS Wt (Cts)":
-                formatWeight(
-                  item.csWeight
-                ),
-
-              "CS Value (US$)":
-                formatPrice(
-                  item.csValue
-                ),
-
-              "Oth Wt (Gms)":
-                formatWeight(
-                  item.otherWeight
-                ),
-
-              "Oth Val (US$)":
-                formatPrice(
-                  item.otherValue
-                ),
-
-              "Labour & Value Addition (US$)":
-                formatPrice(
-                  item.labourValue
-                ),
-
-              "Amount (US$)":
-                formatPrice(
-                  item.amount
-                ),
-
-              Client:
-                item.clientName,
-
-              "DLC No.":
-                item.dlcNo,
-
-              "DLC Date":
-                item.dlcDate
-                  ? new Date(
-                      item.dlcDate
-                    ).toLocaleDateString()
-                  : "-",
-
-              "Expiry Date":
-                item.expiryDate
-                  ? new Date(
-                      item.expiryDate
-                    ).toLocaleDateString()
-                  : "-",
-
-              "Sold Date":
-                item.soldDate
-                  ? new Date(
-                      item.soldDate
-                    ).toLocaleDateString()
-                  : "-",
-
-              Remaining:
-                remaining > 0
-                  ? `${remaining} Days`
-                  : "Expired",
-
-              Status:
-                item.status,
-
-              Image:
-                item.image ||
-                "",
-            };
-          }
+            Status:
+              item.status,
+          })
         );
 
       const worksheet =
@@ -494,6 +396,16 @@ function Inventory() {
         `inventory_export_${Date.now()}.xlsx`
       );
     };
+
+  if (!items.length) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center h-[60vh] text-[#52606d] text-lg font-semibold">
+          Loading inventory...
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
