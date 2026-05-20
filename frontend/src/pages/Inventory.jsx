@@ -274,6 +274,37 @@ function Inventory() {
       sortBy,
     ]);
 
+  /* RESET FILTERS */
+
+  const resetFilters =
+    () => {
+      setSearch("");
+
+      setStatusFilter(
+        "ALL"
+      );
+
+      setItemFilter(
+        "ALL"
+      );
+
+      setClientFilter(
+        "ALL"
+      );
+
+      setDlcFilter(
+        "ALL"
+      );
+
+      setSortBy(
+        "latest"
+      );
+
+      setViewMode(
+        "grid"
+      );
+    };
+
   const exportToExcel =
     () => {
       const exportData =
@@ -424,8 +455,6 @@ function Inventory() {
         XLSX.utils.json_to_sheet(
           exportData
         );
-
-      /* CLICKABLE IMAGE LINKS */
 
       filteredItems.forEach(
         (
@@ -696,6 +725,15 @@ function Inventory() {
           </select>
 
           <div className="flex items-center justify-end gap-2 flex-nowrap">
+            <button
+              onClick={
+                resetFilters
+              }
+              className="bg-[#f8fafb] hover:bg-[#eef2f5] border border-[#dfe5ea] text-[#334e68] px-5 py-2.5 rounded-[14px] text-sm font-semibold transition-all whitespace-nowrap"
+            >
+              Reset
+            </button>
+
             <button
               onClick={
                 exportToExcel
