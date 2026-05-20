@@ -59,14 +59,6 @@ function InventoryTableView({
             sortField
           ];
 
-        if (
-          aValue ==
-            null ||
-          bValue ==
-            null
-        )
-          return 0;
-
         const isNumeric =
           !isNaN(
             aValue
@@ -374,7 +366,103 @@ function InventoryTableView({
                 }
                 className="bg-white border border-[#dfe5ea] rounded-[22px] p-4 shadow-[0_4px_18px_rgba(0,0,0,0.04)]"
               >
-                MOBILE VIEW SAME AS BEFORE
+                <div className="flex gap-4">
+                  <img
+                    src={
+                      item.image ||
+                      "https://via.placeholder.com/100"
+                    }
+                    onError={(
+                      e
+                    ) => {
+                      e.target.src =
+                        "https://via.placeholder.com/100";
+                    }}
+                    className="w-24 h-24 rounded-[18px] object-cover border border-[#dfe5ea]"
+                  />
+
+                  <div className="flex-1 min-w-0">
+                    <div className="text-lg font-black text-[#31475a] truncate">
+                      {
+                        item.skuStNo
+                      }
+                    </div>
+
+                    <div className="text-sm text-[#52606d] mt-1">
+                      {
+                        item.item
+                      }
+                    </div>
+
+                    <div className="text-sm text-[#52606d]">
+                      {
+                        item.clientName
+                      }
+                    </div>
+
+                    <div className="text-sm font-semibold text-[#1f2933] mt-2">
+                      $
+                      {formatPrice(
+                        item.amount
+                      )}
+                    </div>
+
+                    <div className="text-xs text-[#7b8794] mt-1">
+                      DLC:
+                      {" "}
+                      {
+                        item.dlcNo
+                      }
+                    </div>
+
+                    <div className="text-xs text-[#7b8794]">
+                      Sr No:
+                      {" "}
+                      {
+                        item.srNo
+                      }
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <div
+                        className={`px-3 py-1 rounded-full text-xs font-bold
+                        ${
+                          item.status ===
+                          "SOLD"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-green-100 text-green-700"
+                        }
+                      `}
+                      >
+                        {
+                          item.status
+                        }
+                      </div>
+
+                      {remaining && (
+                        <div
+                          className={`px-3 py-1 rounded-full text-xs font-bold
+                          ${
+                            remaining.type ===
+                              "expired" ||
+                            remaining.type ===
+                              "critical"
+                              ? "bg-red-100 text-red-700"
+                              : remaining.type ===
+                                "warning"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-blue-100 text-blue-700"
+                          }
+                        `}
+                        >
+                          {
+                            remaining.text
+                          }
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             );
           }
@@ -461,25 +549,3 @@ function InventoryTableView({
                     }
                     className="border-b border-[#eef2f5] hover:bg-[#f8fafb] cursor-pointer transition-all duration-200"
                   >
-                    {/* KEEP YOUR EXISTING TDs SAME */}
-                  </tr>
-                );
-              }
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <JewelleryDrawer
-        item={selectedItem}
-        onClose={() =>
-          setSelectedItem(
-            null
-          )
-        }
-      />
-    </>
-  );
-}
-
-export default InventoryTableView;
