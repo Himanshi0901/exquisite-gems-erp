@@ -35,7 +35,9 @@ router.get(
       const items =
         await Jewellery.findAll({
           order: [
-            ["srNo", "DESC"],
+            ["dlcDate", "DESC"],
+            ["dlcNo", "DESC"],
+            ["srNo", "ASC"],
           ],
         });
 
