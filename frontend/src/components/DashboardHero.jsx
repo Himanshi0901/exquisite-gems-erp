@@ -56,7 +56,6 @@ function DashboardHero({
         <div className="flex flex-col justify-between">
           <div>
             <p className="text-[#c6d2dc] mb-3 tracking-[0.22em] uppercase text-[11px] md:text-sm">
-              Jewellery ERP Dashboard
             </p>
 
             <h1 className="text-4xl md:text-5xl xl:text-6xl font-black leading-tight text-white">
