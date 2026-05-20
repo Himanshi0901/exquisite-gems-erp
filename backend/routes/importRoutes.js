@@ -249,25 +249,6 @@ router.post(
         );
       }
 
-      /* EXISTING SKU CACHE */
-
-      const existingItems =
-        await Jewellery.findAll(
-          {
-            attributes: [
-              "skuStNo",
-            ],
-          }
-        );
-
-      const existingSkuSet =
-        new Set(
-          existingItems.map(
-            (i) =>
-              i.skuStNo
-          )
-        );
-
       /* IMPORT LOOP */
 
       for (const row of data) {
@@ -305,18 +286,6 @@ router.post(
           continue;
         }
 
-        /* DUPLICATE SKU */
-
-        if (
-          existingSkuSet.has(
-            cleanedRow[
-              "SKU/St.No"
-            ]
-          )
-        ) {
-          continue;
-        }
-
         const sku =
           String(
             cleanedRow[
@@ -328,6 +297,27 @@ router.post(
 
         let imageUrl =
           "";
+
+        /* CHECK EXISTING SKU IMAGE */
+
+        const existingImageItem =
+          await Jewellery.findOne(
+            {
+              where: {
+                skuStNo:
+                  cleanedRow[
+                    "SKU/St.No"
+                  ],
+              },
+            }
+          );
+
+        if (
+          existingImageItem?.image
+        ) {
+          imageUrl =
+            existingImageItem.image;
+        }
 
         const possibleExtensions =
           [
@@ -362,7 +352,8 @@ router.post(
         /* IMAGE UPLOAD */
 
         if (
-          foundImage
+          foundImage &&
+          !imageUrl
         ) {
           const fileBuffer =
             fs.readFileSync(
