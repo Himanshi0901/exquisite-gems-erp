@@ -3,7 +3,10 @@ import {
   AnimatePresence,
 } from "framer-motion";
 
-import { useState } from "react";
+import {
+  useState,
+  useEffect,
+} from "react";
 
 function JewelleryDrawer({
   item,
@@ -18,6 +21,32 @@ function JewelleryDrawer({
     confirmText,
     setConfirmText,
   ] = useState("");
+
+  /* ESC CLOSE DRAWER */
+
+  useEffect(() => {
+    const handleEsc =
+      (event) => {
+        if (
+          event.key ===
+          "Escape"
+        ) {
+          onClose();
+        }
+      };
+
+    window.addEventListener(
+      "keydown",
+      handleEsc
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleEsc
+      );
+    };
+  }, [onClose]);
 
   const formatWeight = (
     value
@@ -350,8 +379,6 @@ function JewelleryDrawer({
                   </h2>
                 </div>
               </div>
-
-              {/* SPACING */}
 
               <div className="pb-24" />
 
