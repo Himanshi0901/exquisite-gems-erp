@@ -70,7 +70,6 @@ function Topbar() {
             </h1>
 
             <p className="text-[10px] md:text-[11px] text-[#c6d2dc] mt-1 tracking-wide">
-              Jewellery ERP
             </p>
           </div>
         </div>
