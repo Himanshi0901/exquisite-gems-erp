@@ -217,8 +217,44 @@ router.post(
           {
             range:
               headerRowIndex,
+
+            defval: "",
+
+            raw: false,
           }
-        );
+        ).map((row) => {
+          const cleaned =
+            {};
+
+          Object.keys(
+            row
+          ).forEach(
+            (key) => {
+              const cleanKey =
+                String(key)
+                  .replace(
+                    /\n/g,
+                    ""
+                  )
+                  .replace(
+                    /\r/g,
+                    ""
+                  )
+                  .replace(
+                    /\s+/g,
+                    " "
+                  )
+                  .trim();
+
+              cleaned[
+                cleanKey
+              ] =
+                row[key];
+            }
+          );
+
+          return cleaned;
+        });
 
       if (
         !data ||
@@ -334,18 +370,7 @@ router.post(
 
       for (const row of data) {
         const cleanedRow =
-          {};
-
-        Object.keys(
-          row
-        ).forEach(
-          (key) => {
-            cleanedRow[
-              key.trim()
-            ] =
-              row[key];
-          }
-        );
+          row;
 
         /* SKIP TOTAL ROW */
 
