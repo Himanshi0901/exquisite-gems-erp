@@ -37,6 +37,7 @@ router.get(
           order: [
             ["dlcDate", "DESC"],
             ["dlcNo", "DESC"],
+            ["item", "ASC"],
             ["srNo", "ASC"],
           ],
         });
