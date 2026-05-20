@@ -174,6 +174,7 @@ function Inventory() {
                 item.status,
                 item.clientName,
                 item.dlcNo,
+                item.description,
               ]
                 .join(" ")
                 .toLowerCase()
