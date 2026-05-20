@@ -461,35 +461,6 @@ function Inventory() {
           exportData
         );
 
-      filteredItems.forEach(
-        (
-          item,
-          index
-        ) => {
-          if (
-            item.image
-          ) {
-            const cellAddress =
-              `Z${
-                index + 2
-              }`;
-
-            worksheet[
-              cellAddress
-            ] = {
-              t: "s",
-
-              v: "Open Image",
-
-              l: {
-                Target:
-                  item.image,
-              },
-            };
-          }
-        }
-      );
-
       const workbook =
         XLSX.utils.book_new();
 
@@ -524,16 +495,6 @@ function Inventory() {
       );
     };
 
-  if (!items.length) {
-    return (
-      <MainLayout>
-        <div className="flex items-center justify-center h-[60vh] text-[#52606d] text-lg font-semibold">
-          Loading inventory...
-        </div>
-      </MainLayout>
-    );
-  }
-
   return (
     <MainLayout>
       <div className="sticky top-[72px] z-30 bg-white border border-[#dfe5ea] rounded-[22px] p-3 md:p-4 mb-6 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
@@ -549,6 +510,142 @@ function Inventory() {
             }
             className="col-span-2 bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-4 py-2.5 outline-none text-sm"
           />
+
+          <div className="flex items-center bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] p-1 w-full">
+            <button
+              onClick={() =>
+                setViewMode(
+                  "grid"
+                )
+              }
+              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition ${
+                viewMode ===
+                "grid"
+                  ? "bg-[#31475a] text-white"
+                  : "text-[#52606d]"
+              }`}
+            >
+              Grid
+            </button>
+
+            <button
+              onClick={() =>
+                setViewMode(
+                  "table"
+                )
+              }
+              className={`flex-1 px-3 py-2 rounded-[12px] text-sm font-semibold transition ${
+                viewMode ===
+                "table"
+                  ? "bg-[#31475a] text-white"
+                  : "text-[#52606d]"
+              }`}
+            >
+              Table
+            </button>
+          </div>
+
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(
+                e.target.value
+              )
+            }
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
+          >
+            <option value="ALL">
+              All Status
+            </option>
+
+            <option value="IN_STOCK">
+              Available
+            </option>
+
+            <option value="SOLD">
+              Sold
+            </option>
+          </select>
+
+          <select
+            value={itemFilter}
+            onChange={(e) =>
+              setItemFilter(
+                e.target.value
+              )
+            }
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
+          >
+            <option value="ALL">
+              All Jewellery
+            </option>
+
+            <option value="NECKLACE">
+              Necklace
+            </option>
+
+            <option value="RING">
+              Ring
+            </option>
+
+            <option value="EARRING">
+              Earring
+            </option>
+
+            <option value="BANGLE">
+              Bangle
+            </option>
+          </select>
+
+          <select
+            value={clientFilter}
+            onChange={(e) =>
+              setClientFilter(
+                e.target.value
+              )
+            }
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
+          >
+            <option value="ALL">
+              All Clients
+            </option>
+
+            {uniqueClients.map(
+              (client) => (
+                <option
+                  key={client}
+                  value={client}
+                >
+                  {client}
+                </option>
+              )
+            )}
+          </select>
+
+          <select
+            value={dlcFilter}
+            onChange={(e) =>
+              setDlcFilter(
+                e.target.value
+              )
+            }
+            className="bg-[#f8fafb] border border-[#dfe5ea] rounded-[14px] px-3 py-2.5 outline-none text-sm"
+          >
+            <option value="ALL">
+              All DLC
+            </option>
+
+            {uniqueDlc.map(
+              (dlc) => (
+                <option
+                  key={dlc}
+                  value={dlc}
+                >
+                  {dlc}
+                </option>
+              )
+            )}
+          </select>
 
           <div className="flex items-center justify-end gap-2 flex-nowrap">
             <button
@@ -570,6 +667,13 @@ function Inventory() {
             >
               Export Excel
             </button>
+
+            <div className="flex items-center justify-center bg-[#f8fafb] rounded-[14px] border border-[#dfe5ea] px-4 py-2.5 text-sm font-semibold text-[#334e68] whitespace-nowrap">
+              {
+                filteredItems.length
+              }{" "}
+              Items
+            </div>
           </div>
         </div>
       </div>
