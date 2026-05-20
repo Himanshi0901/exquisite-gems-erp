@@ -47,7 +47,12 @@ export function InventoryProvider({
           `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}`
         );
 
-        fetchItems();
+        setItems((prev) =>
+          prev.filter(
+            (item) =>
+              item.id !== id
+          )
+        );
       } catch (error) {
         console.log(error);
       }
@@ -60,7 +65,17 @@ export function InventoryProvider({
           `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/dubai`
         );
 
-        fetchItems();
+        setItems((prev) =>
+          prev.map((item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  status:
+                    "DUBAI",
+                }
+              : item
+          )
+        );
       } catch (error) {
         console.log(error);
       }
@@ -73,7 +88,17 @@ export function InventoryProvider({
           `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/sold`
         );
 
-        fetchItems();
+        setItems((prev) =>
+          prev.map((item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  status:
+                    "SOLD",
+                }
+              : item
+          )
+        );
       } catch (error) {
         console.log(error);
       }
@@ -86,7 +111,17 @@ export function InventoryProvider({
           `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/returned`
         );
 
-        fetchItems();
+        setItems((prev) =>
+          prev.map((item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  status:
+                    "RETURNED",
+                }
+              : item
+          )
+        );
       } catch (error) {
         console.log(error);
       }
