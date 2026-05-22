@@ -18,8 +18,13 @@ function ProtectedRoute({
     AuthContext
   );
 
-  if (loading)
-    return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-[#52606d] font-semibold">
+        Loading...
+      </div>
+    );
+  }
 
   if (!user) {
     return (

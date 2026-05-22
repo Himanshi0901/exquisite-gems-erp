@@ -1,12 +1,16 @@
 require("dotenv").config();
 
-const express = require("express");
+const express =
+  require("express");
 
-const multer = require("multer");
+const multer =
+  require("multer");
 
-const fs = require("fs");
+const fs =
+  require("fs");
 
-const mime = require("mime-types");
+const mime =
+  require("mime-types");
 
 const {
   createClient,
@@ -14,6 +18,16 @@ const {
 
 const Jewellery =
   require("../models/Jewellery");
+
+const authMiddleware =
+  require(
+    "../middleware/authMiddleware"
+  );
+
+const allowRoles =
+  require(
+    "../middleware/roleMiddleware"
+  );
 
 const router =
   express.Router();
@@ -30,6 +44,15 @@ const supabase =
 
 router.get(
   "/",
+
+  authMiddleware,
+
+  allowRoles(
+    "ADMIN",
+    "STAFF",
+    "VIEWER"
+  ),
+
   async (req, res) => {
     try {
       const items =
@@ -56,7 +79,15 @@ router.get(
 
 router.post(
   "/",
+
+  authMiddleware,
+
+  allowRoles(
+    "ADMIN"
+  ),
+
   upload.single("image"),
+
   async (req, res) => {
     try {
       let imageUrl = "";
@@ -105,12 +136,8 @@ router.post(
         }
       }
 
-      /* DLC DATE */
-
       const dlcDate =
         new Date();
-
-      /* EXPIRY DATE */
 
       const expiryDate =
         new Date();
@@ -145,6 +172,13 @@ router.post(
 
 router.delete(
   "/:id",
+
+  authMiddleware,
+
+  allowRoles(
+    "ADMIN"
+  ),
+
   async (req, res) => {
     try {
       await Jewellery.destroy({
@@ -170,6 +204,13 @@ router.delete(
 
 router.patch(
   "/:id/dubai",
+
+  authMiddleware,
+
+  allowRoles(
+    "ADMIN"
+  ),
+
   async (req, res) => {
     try {
       const today =
@@ -218,6 +259,14 @@ router.patch(
 
 router.patch(
   "/:id/sold",
+
+  authMiddleware,
+
+  allowRoles(
+    "ADMIN",
+    "STAFF"
+  ),
+
   async (req, res) => {
     try {
       await Jewellery.update(
@@ -251,6 +300,13 @@ router.patch(
 
 router.patch(
   "/:id/returned",
+
+  authMiddleware,
+
+  allowRoles(
+    "ADMIN"
+  ),
+
   async (req, res) => {
     try {
       await Jewellery.update(

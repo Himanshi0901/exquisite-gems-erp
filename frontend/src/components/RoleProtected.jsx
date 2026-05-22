@@ -12,10 +12,20 @@ function RoleProtected({
   children,
   allowedRoles,
 }) {
-  const { user } =
-    useContext(
-      AuthContext
+  const {
+    user,
+    loading,
+  } = useContext(
+    AuthContext
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-[#52606d] font-semibold">
+        Loading...
+      </div>
     );
+  }
 
   if (
     !allowedRoles.includes(
@@ -25,6 +35,7 @@ function RoleProtected({
     return (
       <Navigate
         to="/inventory"
+        replace
       />
     );
   }

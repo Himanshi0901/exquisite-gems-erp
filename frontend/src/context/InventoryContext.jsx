@@ -4,7 +4,7 @@ import {
   useState,
 } from "react";
 
-import axios from "axios";
+import api from "../utils/api";
 
 export const InventoryContext =
   createContext();
@@ -24,8 +24,8 @@ export function InventoryProvider({
         setLoading(true);
 
         const res =
-          await axios.get(
-            "https://exquisite-gems-erp.onrender.com/api/jewellery"
+          await api.get(
+            "/jewellery"
           );
 
         setItems(res.data);
@@ -43,8 +43,8 @@ export function InventoryProvider({
   const deleteItem =
     async (id) => {
       try {
-        await axios.delete(
-          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}`
+        await api.delete(
+          `/jewellery/${id}`
         );
 
         setItems((prev) =>
@@ -61,8 +61,8 @@ export function InventoryProvider({
   const sendToDubai =
     async (id) => {
       try {
-        await axios.patch(
-          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/dubai`
+        await api.patch(
+          `/jewellery/${id}/dubai`
         );
 
         setItems((prev) =>
@@ -84,8 +84,8 @@ export function InventoryProvider({
   const markSold =
     async (id) => {
       try {
-        await axios.patch(
-          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/sold`
+        await api.patch(
+          `/jewellery/${id}/sold`
         );
 
         setItems((prev) =>
@@ -107,8 +107,8 @@ export function InventoryProvider({
   const markReturned =
     async (id) => {
       try {
-        await axios.patch(
-          `https://exquisite-gems-erp.onrender.com/api/jewellery/${id}/returned`
+        await api.patch(
+          `/jewellery/${id}/returned`
         );
 
         setItems((prev) =>

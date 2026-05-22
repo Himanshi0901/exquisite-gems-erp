@@ -102,7 +102,7 @@ function App() {
             }
           />
 
-          {/* PROTECTED ROUTES */}
+          {/* DASHBOARD */}
 
           <Route
             path="/"
@@ -113,6 +113,8 @@ function App() {
             }
           />
 
+          {/* INVENTORY */}
+
           <Route
             path="/inventory"
             element={
@@ -122,16 +124,41 @@ function App() {
             }
           />
 
+          {/* ADD ITEM - ADMIN ONLY */}
+
           <Route
             path="/add-item"
             element={
               <ProtectedRoute>
-                <RoleProtected allowedRoles={["ADMIN",]}>
+                <RoleProtected
+                  allowedRoles={[
+                    "ADMIN",
+                  ]}
+                >
                   <AddItem />
                 </RoleProtected>
               </ProtectedRoute>
             }
           />
+
+          {/* IMPORT DATA - ADMIN ONLY */}
+
+          <Route
+            path="/import-data"
+            element={
+              <ProtectedRoute>
+                <RoleProtected
+                  allowedRoles={[
+                    "ADMIN",
+                  ]}
+                >
+                  <ImportData />
+                </RoleProtected>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* FALLBACK */}
 
           <Route
             path="*"
