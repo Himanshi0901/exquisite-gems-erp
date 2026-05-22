@@ -2,9 +2,14 @@ import {
   createContext,
   useEffect,
   useState,
+  useContext,
 } from "react";
 
 import api from "../utils/api";
+
+import {
+  AuthContext,
+} from "./AuthContext";
 
 export const InventoryContext =
   createContext();
@@ -12,6 +17,14 @@ export const InventoryContext =
 export function InventoryProvider({
   children,
 }) {
+  const {
+    user,
+    loading:
+      authLoading,
+  } = useContext(
+    AuthContext
+  );
+
   const [items, setItems] =
     useState([]);
 
@@ -37,8 +50,16 @@ export function InventoryProvider({
     };
 
   useEffect(() => {
-    fetchItems();
-  }, []);
+    if (
+      user &&
+      !authLoading
+    ) {
+      fetchItems();
+    }
+  }, [
+    user,
+    authLoading,
+  ]);
 
   const deleteItem =
     async (id) => {
