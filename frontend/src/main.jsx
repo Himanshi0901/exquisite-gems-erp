@@ -14,22 +14,22 @@ import {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <InventoryProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <InventoryProvider>
         <App />
-      </AuthProvider>
       
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: "#111",
-            color: "#fff",
-            border:
-              "1px solid rgba(234,179,8,0.2)",
-          },
-        }}
-      />
-    </InventoryProvider>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: "#111",
+              color: "#fff",
+              border:
+                "1px solid rgba(234,179,8,0.2)",
+            },
+          }}
+        />
+      </InventoryProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
