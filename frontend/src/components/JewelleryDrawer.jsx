@@ -8,6 +8,8 @@ import {
   useEffect,
 } from "react";
 
+import api from "../services/api";
+
 function JewelleryDrawer({
   item,
   onClose,
@@ -501,16 +503,13 @@ function JewelleryDrawer({
                   onClick={async () => {
                     try {
                       const response =
-                        await fetch(
+                        await api.patch(
                           `https://exquisite-gems-erp.onrender.com/api/jewellery/${item.id}/sold`,
-                          {
-                            method:
-                              "PATCH",
-                          }
                         );
 
                       if (
-                        response.ok
+                        response.status ===
+                        200
                       ) {
                         setConfirmSell(
                           false
