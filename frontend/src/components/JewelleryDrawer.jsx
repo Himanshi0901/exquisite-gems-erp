@@ -14,6 +14,13 @@ function JewelleryDrawer({
   item,
   onClose,
 }) {
+  const role =
+    JSON.parse(
+      localStorage.getItem(
+        "user"
+      )
+    )?.role;
+    
   const [
     confirmSell,
     setConfirmSell,
@@ -385,36 +392,40 @@ function JewelleryDrawer({
               <div className="pb-24" />
 
               {/* SOLD BUTTON */}
+              {(role ===
+                "ADMIN" ||
+                role ===
+                "STAFF") && (
+                <button
+                  onClick={() => {
+                    setConfirmSell(
+                      true
+                    );
 
-              <button
-                onClick={() => {
-                  setConfirmSell(
-                    true
-                  );
-
-                  setConfirmText(
-                    ""
-                  );
-                }}
-                disabled={
-                  item.status ===
-                  "SOLD"
-                }
-                className={`sticky bottom-0 mt-4 w-full py-3 rounded-[16px] text-[14px] font-bold transition-all
-                  
-                  ${
+                    setConfirmText(
+                      ""
+                    );
+                  }}
+                  disabled={
                     item.status ===
                     "SOLD"
-                      ? "bg-red-100 text-red-500 cursor-not-allowed"
-                      : "bg-green-500 hover:bg-green-600 text-white"
                   }
-                `}
-              >
-                {item.status ===
-                "SOLD"
-                  ? "Item Sold"
-                  : "Mark As Sold"}
-              </button>
+                  className={`sticky bottom-0 mt-4 w-full py-3 rounded-[16px] text-[14px] font-bold transition-all
+                    
+                    ${
+                      item.status ===
+                      "SOLD"
+                        ? "bg-red-100 text-red-500 cursor-not-allowed"
+                        : "bg-green-500 hover:bg-green-600 text-white"
+                    }
+                  `}
+                >
+                  {item.status ===
+                  "SOLD"
+                    ? "Item Sold"
+                    : "Mark As Sold"}
+                </button>
+                )}
             </div>
           </div>
         </motion.div>
