@@ -5,7 +5,7 @@ import {
   useContext,
 } from "react";
 
-import api from "../utils/api";
+import api from "../services/api";
 
 import {
   AuthContext,
