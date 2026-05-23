@@ -522,11 +522,15 @@ function JewelleryDrawer({
                         response.status ===
                         200
                       ) {
+                        item.status =
+                          "SOLD";
+
+                        item.soldDate =
+                          new Date();
+
                         setConfirmSell(
                           false
                         );
-
-                        window.location.reload();
                       }
                     } catch (error) {
                       console.log(
