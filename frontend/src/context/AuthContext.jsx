@@ -97,22 +97,6 @@ export function AuthProvider({
 
     resetTimer();
 
-    const handleUnload =
-      () => {
-        localStorage.removeItem(
-          "token"
-        );
-
-        localStorage.removeItem(
-          "user"
-        );
-      };
-
-    window.addEventListener(
-      "beforeunload",
-      handleUnload
-    );
-
     return () => {
       clearTimeout(
         timeout
@@ -125,11 +109,6 @@ export function AuthProvider({
             resetTimer
           );
         }
-      );
-
-      window.removeEventListener(
-        "beforeunload",
-        handleUnload
       );
     };
   }, []);
