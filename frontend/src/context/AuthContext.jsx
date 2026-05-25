@@ -16,6 +16,8 @@ export function AuthProvider({
   const [loading, setLoading] =
     useState(true);
 
+  /* RESTORE LOGIN */
+
   useEffect(() => {
     const token =
       localStorage.getItem(
@@ -39,6 +41,97 @@ export function AuthProvider({
     }
 
     setLoading(false);
+  }, []);
+
+  /* AUTO LOGOUT */
+
+  useEffect(() => {
+    let timeout;
+
+    const logoutUser =
+      () => {
+        localStorage.removeItem(
+          "token"
+        );
+
+        localStorage.removeItem(
+          "user"
+        );
+
+        setUser(null);
+
+        window.location.href =
+          "/login";
+      };
+
+    const resetTimer =
+      () => {
+        clearTimeout(
+          timeout
+        );
+
+        timeout =
+          setTimeout(
+            logoutUser,
+            15 *
+              60 *
+              1000
+          );
+      };
+
+    const events = [
+      "mousemove",
+      "keydown",
+      "click",
+      "scroll",
+    ];
+
+    events.forEach(
+      (event) => {
+        window.addEventListener(
+          event,
+          resetTimer
+        );
+      }
+    );
+
+    resetTimer();
+
+    const handleUnload =
+      () => {
+        localStorage.removeItem(
+          "token"
+        );
+
+        localStorage.removeItem(
+          "user"
+        );
+      };
+
+    window.addEventListener(
+      "beforeunload",
+      handleUnload
+    );
+
+    return () => {
+      clearTimeout(
+        timeout
+      );
+
+      events.forEach(
+        (event) => {
+          window.removeEventListener(
+            event,
+            resetTimer
+          );
+        }
+      );
+
+      window.removeEventListener(
+        "beforeunload",
+        handleUnload
+      );
+    };
   }, []);
 
   const login = (
@@ -70,6 +163,9 @@ export function AuthProvider({
     );
 
     setUser(null);
+
+    window.location.href =
+      "/login";
   };
 
   return (
