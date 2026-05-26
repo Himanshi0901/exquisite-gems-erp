@@ -60,8 +60,7 @@ export function AuthProvider({
 
         setUser(null);
 
-        window.location.href =
-          "/login";
+        window.location.replace("/login");
       };
 
     const resetTimer =
@@ -143,8 +142,7 @@ export function AuthProvider({
 
     setUser(null);
 
-    window.location.href =
-      "/login";
+    window.location.replace("/login");
   };
 
   return (
