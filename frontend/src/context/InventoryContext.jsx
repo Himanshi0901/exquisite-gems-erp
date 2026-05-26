@@ -55,6 +55,16 @@ export function InventoryProvider({
       !authLoading
     ) {
       fetchItems();
+
+      const interval =
+        setInterval(() => {
+          fetchItems();
+        }, 5000);
+
+      return () =>
+        clearInterval(
+          interval
+        );
     }
   }, [
     user,
